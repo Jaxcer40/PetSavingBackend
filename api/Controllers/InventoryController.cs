@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using api.Data;
+using api.Mappers;
 
 namespace api.Controllers
 {
@@ -20,7 +21,8 @@ namespace api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var inventories= _context.Inventories.ToList();
+            var inventories= _context.Inventories.ToList()
+            .Select(s => s.ToReadInventoryDto());
 
             return Ok(inventories);
         
@@ -36,7 +38,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(inventory);
+            return Ok(inventory.ToReadInventoryDto());
         }
 
     }
