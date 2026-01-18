@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using api.Dtos.Admission;
 using api.Models;
@@ -25,7 +26,7 @@ namespace api.Mappers
                     Species = admissionModel.Patient.Species
                 },
 
-                //AGREGAR CUANDO ESTE VET
+                //AGREGAR CUANDO ESTÉ VET
 
                 // Vet = new VetSummaryDto
                 // {
@@ -36,6 +37,23 @@ namespace api.Mappers
 
             };
 
+        }
+
+        public static Admission ToAdmissionFromCreateDto(this CreateAdmissionDto admissionDto)
+        {
+            return new Admission
+            {
+                AdmissionDate = admissionDto.AdmissionDate,
+                DischargeDate = admissionDto.DischargeDate,
+                AdmissionReason = admissionDto.AdmissionReason,
+                CageNumber = admissionDto.CageNumber,
+
+                // Aquí simplemente asignas los Ids
+                //Son llaves foraneas 
+                PatientId = admissionDto.PatientId,
+                VetId = admissionDto.VetId
+
+            };
         }
     }
 }

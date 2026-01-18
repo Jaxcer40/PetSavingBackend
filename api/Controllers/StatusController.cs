@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using api.Data;
 using api.Mappers;
+using api.Dtos.Status;
 
 namespace api.Controllers
 {
@@ -38,6 +39,15 @@ namespace api.Controllers
             }
 
             return Ok(status.ToReadStatusDto());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateStatusDto statusDto)
+        {
+            var statusModel = statusDto.ToStatusFromCreateDto();
+            _context.Statuses.Add(statusModel);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDto());
         }
     }
 }

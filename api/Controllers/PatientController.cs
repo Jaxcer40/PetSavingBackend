@@ -8,7 +8,7 @@ using api.Mappers;
 
 namespace api.Controllers
 {
-    [Route("api/Patient")]
+    [Route("api/patient")]
     [ApiController]
     public class PatientController : ControllerBase
     {

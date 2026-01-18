@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Dtos.Inventory;
 using api.Models;
+using Humanizer;
 
 namespace api.Mappers
 {
@@ -17,7 +18,20 @@ namespace api.Mappers
                 Name= inventoryModel.Name,
                 Description=inventoryModel.Description,
                 UnitValue= inventoryModel.UnitValue,
-                Stock= inventoryModel.Stock
+                Stock= inventoryModel.Stock,
+            };
+        }
+
+        public static Inventory ToInventoryFromCreateDto(this CreateInventoryDto inventoryDto)
+        {
+            return new Inventory
+            {
+                Name= inventoryDto.Name,
+                Description= inventoryDto.Description,
+                UnitValue=inventoryDto.UnitValue,
+                Stock=inventoryDto.Stock,
+                SupplerName=inventoryDto.SupplerName
+
             };
         }
     }

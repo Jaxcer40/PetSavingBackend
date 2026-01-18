@@ -5,10 +5,11 @@ using System.Linq;
 using System.Threading;
 using api.Data;
 using api.Mappers;
+using api.Dtos.Appointmet;
 
 namespace api.Controllers
 {
-    [Route("api/Appointmet")]
+    [Route("api/appointmet")]
     [ApiController]
     public class AppointmetController : ControllerBase
     {
@@ -21,7 +22,8 @@ namespace api.Controllers
         [HttpGet]
         public IActionResult GetAll()
         {
-            var appointmets= _context.Appointmets.ToList();
+            var appointmets= _context.Appointmets.ToList()
+            .Select( s=> s.ToReadAppointmetDto());
            
 
             return Ok(appointmets);
@@ -38,7 +40,7 @@ namespace api.Controllers
                 return NotFound();
             }
 
-            return Ok(appointment);
+            return Ok(appointment.ToReadAppointmetDto());
         }
 
     }

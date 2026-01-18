@@ -24,5 +24,15 @@ namespace api.Mappers
             };
 
         }
+
+        public static Status ToStatusFromCreateDto(this CreateStatusDto statusDto)
+        {
+            return new Status
+            {
+               AdmissionId= statusDto.AdmissionId,
+               CurrentStatus= statusDto.CurrentStatus,
+                Notes=statusDto.Notes
+            };
+        }
     }
 }

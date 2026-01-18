@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading;
 using api.Data;
 using api.Mappers;
+using api.Dtos.Inventory;
 
 namespace api.Controllers
 {
@@ -39,6 +40,15 @@ namespace api.Controllers
             }
 
             return Ok(inventory.ToReadInventoryDto());
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] CreateInventoryDto inventoryDto)
+        {
+            var inventoryModel= inventoryDto.ToInventoryFromCreateDto();
+            _context.Inventories.Add(inventoryModel);
+            _context.SaveChanges();
+            return CreatedAtAction(nameof(GetById),new {id=inventoryModel.Id}, inventoryModel.ToReadInventoryDto());
         }
 
     }
