@@ -6,6 +6,7 @@ using System.Threading;
 using api.Data;
 using api.Mappers;
 using api.Dtos.Admission;
+using System.Data;
 
 namespace api.Controllers
 {
@@ -52,6 +53,54 @@ namespace api.Controllers
             _context.Admissions.Add(admissionModel);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetById), new {id= admissionModel.Id}, admissionModel.ToReadAdmissionDto());
+        }
+
+        [HttpPatch("{id}")]
+        public IActionResult Patch(int id, [FromBody] UpdateAdmissionDto updateDto)
+        {
+            var admissionModel = _context.Admissions.FirstOrDefault(x=>x.Id==id);
+            
+            if(admissionModel == null)
+            {
+                return NotFound();
+            }
+
+            if(updateDto.PatientId.HasValue)
+            {
+                var patientExists = _context.Patients.Any(p => p.Id == updateDto.PatientId.Value);
+                if (!patientExists)
+                return BadRequest("El PatientId no existe.");
+
+                admissionModel.PatientId=updateDto.PatientId.Value;
+            }
+
+            if(updateDto.VetId.HasValue)
+            {
+                //Aplicar cuando esté Vet
+
+                // var vetExists = _context.Vets.Any(p => p.Id == updateDto.VetId.Value);
+                // if (!vetExists)
+                // return BadRequest("El VetId no existe.");
+
+
+                admissionModel.VetId= updateDto.VetId.Value;
+            }
+
+            if(updateDto.AdmissionDate.HasValue)
+                admissionModel.AdmissionDate=updateDto.AdmissionDate.Value;
+            
+            if(updateDto.DischargeDate.HasValue)
+                admissionModel.DischargeDate=updateDto.DischargeDate.Value;
+            
+            if(updateDto.AdmissionReason!=null)
+                admissionModel.AdmissionReason=updateDto.AdmissionReason;
+            
+            if(updateDto.CageNumber!=null)
+                admissionModel.CageNumber=updateDto.CageNumber;
+
+            _context.SaveChanges();
+            
+            return Ok(admissionModel.ToReadAdmissionDto());
         }
 
     }

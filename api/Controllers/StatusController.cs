@@ -6,6 +6,7 @@ using System.Threading;
 using api.Data;
 using api.Mappers;
 using api.Dtos.Status;
+using api.Models;
 
 namespace api.Controllers
 {
@@ -48,6 +49,35 @@ namespace api.Controllers
             _context.Statuses.Add(statusModel);
             _context.SaveChanges();
             return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDto());
+        }
+
+        [HttpPatch]
+        public IActionResult Patch(int id,  [FromBody] UpdateStatusDto updateDto)
+        {
+            var statusModel= _context.Statuses.FirstOrDefault(x=>x.Id == id);
+
+            if (statusModel == null)
+            {
+                return NotFound();
+            }
+
+            if(updateDto.AdmissionId.HasValue)
+            {
+                var admissionExists = _context.Admissions.Any(p => p.Id == updateDto.AdmissionId.Value);
+                if (!admissionExists)
+                return BadRequest("El AdmissionId no existe.");
+                statusModel.AdmissionId= updateDto.AdmissionId.Value;
+            }
+
+            if(updateDto.CurrentStatus!=null)
+                statusModel.CurrentStatus=updateDto.CurrentStatus;
+
+            if(updateDto.Notes !=null)
+                statusModel.Notes=updateDto.Notes;
+            
+            _context.SaveChanges();
+
+            return Ok(statusModel.ToReadStatusDto());
         }
     }
 }
