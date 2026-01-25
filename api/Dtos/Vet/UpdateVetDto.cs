@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace api.Dtos.Vet
 {
-    public class UpdateVetDton
+    public class UpdateVetDto
     {
         public string? FirstName {get;set;}=string.Empty;
 

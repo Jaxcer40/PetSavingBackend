@@ -6,6 +6,7 @@ using System.Threading;
 using api.Data;
 using api.Mappers;
 using api.Dtos.Patient;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -22,21 +23,21 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var patients= _context.Patients.ToList()
-            .Select(s=>s.ToReadPatientDto());
+            var patients=await _context.Patients
+            .Select(s=>s.ToReadPatientDto()).ToListAsync();
            
-
             return Ok(patients);
         
         }
 
         //Get por Id
-        [HttpGet ("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet ("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var patient = _context.Patients.Find(Id);
+            var patient = await _context.Patients.Include(a=>a.Client)
+            .FirstOrDefaultAsync(a=>a.Id==id);
             
             if(patient== null)
             {
@@ -48,18 +49,29 @@ namespace api.Controllers
 
         //Post para patient
         [HttpPost]
-        public IActionResult Create([FromBody] CreatePatientDto patientDto)
+        public async Task<IActionResult> Create([FromBody] CreatePatientDto patientDto)
         {
+            // Validar que el DTO no sea nulo
+            if (patientDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var patientExists = await _context.Clients.AnyAsync(c => c.Id == patientDto.ClientId);
+            if (!patientExists)
+                return BadRequest("El ClientId no existe.");
+
             var patientModel = patientDto.ToPatientFromCreateDto();
-            _context.Patients.Add(patientModel);
-            _context.SaveChanges();
+            await _context.Patients.AddAsync(patientModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById),new {id = patientModel.Id}, patientModel.ToReadPatientDto());
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromBody] UpdatePatientDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdatePatientDto updateDto)
         {
-            var patientModel= _context.Patients.FirstOrDefault(x=>x.Id==id);
+            if (updateDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var patientModel= await _context.Patients.FirstOrDefaultAsync(x=>x.Id==id);
 
             if (patientModel == null)
             {
@@ -68,34 +80,40 @@ namespace api.Controllers
 
             if(updateDto.ClientId.HasValue)
             {
-                var clientExists = _context.Clients.Any(c => c.Id == updateDto.ClientId.Value);
+                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDto.ClientId.Value);
                 if (!clientExists)
                     return BadRequest("El ClientId no existe.");
                 patientModel.ClientId=updateDto.ClientId.Value;
             }
 
-            if(updateDto.Name!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Name))
                 patientModel.Name=updateDto.Name;
             
-            if (updateDto.Species!=null)
+            if (!string.IsNullOrWhiteSpace(updateDto.Species!))
                 patientModel.Species=updateDto.Species;
             
-            if(updateDto.Breed!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Breed))
                 patientModel.Breed=updateDto.Breed;
             
-            if(updateDto.Gender!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Gender))
                 patientModel.Gender=updateDto.Gender;
             
+            if (updateDto.BirthDate.HasValue && updateDto.BirthDate.Value > DateTime.UtcNow)
+                return BadRequest("Vienes del futuro??? :O");
+
             if(updateDto.BirthDate.HasValue)
                 patientModel.BirthDate=updateDto.BirthDate.Value;
             
+            if (updateDto.Weight.HasValue && updateDto.Weight.Value < 0)
+                return BadRequest("El peso no puede ser negativo.");
+
             if(updateDto.Weight.HasValue)
                 patientModel.Weight=updateDto.Weight.Value;
 
             if(updateDto.AdoptedDate.HasValue)
                 patientModel.AdoptedDate=updateDto.AdoptedDate.Value;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(patientModel.ToReadPatientDto());
         }
@@ -103,9 +121,9 @@ namespace api.Controllers
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var patientModel= _context.Patients.FirstOrDefault(x=>x.Id==id);
+            var patientModel=  await _context.Patients.FirstOrDefaultAsync(x=>x.Id==id);
             if (patientModel == null)
             {
                 return NotFound();
@@ -113,7 +131,7 @@ namespace api.Controllers
 
             _context.Patients.Remove(patientModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -7,6 +7,8 @@ using api.Data;
 using api.Mappers;
 using api.Dtos.Vet;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
+using System.Formats.Tar;
 
 namespace api.Controllers
 {
@@ -21,18 +23,18 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var vets= _context.Vets.ToList()
-            .Select(s=>s.ToReadVetDto());
+            var vets= await _context.Vets
+            .Select(s=>s.ToReadVetDto()).ToListAsync();
            
             return Ok(vets);
         }        
 
-        [HttpGet("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var vet= _context.Vets.Find(Id);
+            var vet= await _context.Vets.FindAsync(id);
 
             if (vet == null)
             {
@@ -43,38 +45,45 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateVetDto vetDto)
+        public async Task<IActionResult> Create([FromBody] CreateVetDto vetDto)
         {
+            // Validar que el DTO no sea nulo
+            if (vetDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
             var vetModel= vetDto.ToVetFromCreateDto();
-            _context.Vets.Add(vetModel);
-            _context.SaveChanges();
+            await _context.Vets.AddAsync(vetModel);
+            await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(GetById), new {id=vetModel.Id}, vetModel.ToReadVetDto());
         }
 
-        [HttpPatch("{Id}")]
-        public IActionResult Patch(int id, [FromBody] UpdateVetDton updateVet)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateVetDto updateVet)
         {
-            var vetModel=_context.Vets.FirstOrDefault(x=>x.Id==id);
+            if (updateVet == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var vetModel= await _context.Vets.FirstOrDefaultAsync(x=>x.Id==id);
 
             if (vetModel == null)
             {
                 return NotFound();
             }
 
-            if(updateVet.FirstName!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.FirstName))
                 vetModel.FirstName= updateVet.FirstName;
             
-            if(updateVet.LastName!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.LastName))
                 vetModel.LastName= updateVet.LastName;
             
-            if(updateVet.Email!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.Email))
                 vetModel.Email= updateVet.Email;
             
-            if(updateVet.PhoneNumber!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.PhoneNumber))
                 vetModel.PhoneNumber= updateVet.PhoneNumber;
             
-            if(updateVet.Specialization!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.Specialization))
                 vetModel.Specialization= updateVet.Specialization;
             
             if(updateVet.BirthDate.HasValue)
@@ -83,19 +92,19 @@ namespace api.Controllers
             if(updateVet.HireDate.HasValue)
                 vetModel.HireDate= updateVet.HireDate.Value;    
             
-            if(updateVet.Activity!=null)
+            if(!string.IsNullOrWhiteSpace(updateVet.Activity))
                 vetModel.Activity= updateVet.Activity;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return Ok(vetModel.ToReadVetDto());
         }
 
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var vetModel= _context.Vets.FirstOrDefault(x=>x.Id==id);
+            var vetModel= await _context.Vets.FirstOrDefaultAsync(x=>x.Id==id);
             if (vetModel == null)
             {
                 return NotFound();
@@ -103,7 +112,7 @@ namespace api.Controllers
 
             _context.Vets.Remove(vetModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -7,6 +7,7 @@ using api.Data;
 using api.Mappers;
 using api.Dtos.Admission;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -22,20 +23,20 @@ namespace api.Controllers
 
         //Get de Admission
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var admissions= _context.Admissions.ToList()
-            .Select(s=>s.ToReadAdmissionDto());
-           
+            var admissions = await _context.Admissions
+            .Select(s => s.ToReadAdmissionDto()).ToListAsync();
 
             return Ok(admissions);
-        
         }
 
-        [HttpGet ("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet ("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var admission = _context.Admissions.Find(Id);
+            var admission = await _context.Admissions
+            .Include(a => a.Patient).Include(a => a.Vet)
+            .FirstOrDefaultAsync(a => a.Id == id);
             
             if(admission== null)
             {
@@ -47,18 +48,37 @@ namespace api.Controllers
 
         //Post de Admission
         [HttpPost]
-        public IActionResult Create([FromBody] CreateAdmissionDto admissionDto)
+        public async Task<IActionResult> Create([FromBody] CreateAdmissionDto admissionDto)
         {
+
+            // Validar que el DTO no sea nulo
+            if (admissionDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            // Validar que el PatientId exista
+            var patientExists = await _context.Patients.AnyAsync(p => p.Id == admissionDto.PatientId);
+            if (!patientExists)
+                return BadRequest("El PatientId no existe.");
+
+            // Validar que el VetId exista (si lo envías en el DTO)
+            var vetExists = await _context.Vets.AnyAsync(v => v.Id == admissionDto.VetId);
+            if (!vetExists)
+                return BadRequest("El VetId no existe.");
+
+
             var admissionModel = admissionDto.ToAdmissionFromCreateDto();
-            _context.Admissions.Add(admissionModel);
-            _context.SaveChanges();
+            await _context.Admissions.AddAsync(admissionModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new {id= admissionModel.Id}, admissionModel.ToReadAdmissionDto());
         }
 
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromBody] UpdateAdmissionDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAdmissionDto updateDto)
         {
-            var admissionModel = _context.Admissions.FirstOrDefault(x=>x.Id==id);
+            if (updateDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var admissionModel = await _context.Admissions.FirstOrDefaultAsync(x=>x.Id==id);
             
             if(admissionModel == null)
             {
@@ -67,7 +87,7 @@ namespace api.Controllers
 
             if(updateDto.PatientId.HasValue)
             {
-                var patientExists = _context.Patients.Any(p => p.Id == updateDto.PatientId.Value);
+                var patientExists = await _context.Patients.AnyAsync(p => p.Id == updateDto.PatientId.Value);
                 if (!patientExists)
                     return BadRequest("El PatientId no existe.");
 
@@ -76,7 +96,7 @@ namespace api.Controllers
 
             if(updateDto.VetId.HasValue)
             {
-                var vetExists = _context.Vets.Any(v => v.Id == updateDto.VetId.Value);
+                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDto.VetId.Value);
                 if (!vetExists)
                     return BadRequest("El VetId no existe.");
 
@@ -89,13 +109,13 @@ namespace api.Controllers
             if(updateDto.DischargeDate.HasValue)
                 admissionModel.DischargeDate=updateDto.DischargeDate.Value;
             
-            if(updateDto.AdmissionReason!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.AdmissionReason))
                 admissionModel.AdmissionReason=updateDto.AdmissionReason;
             
-            if(updateDto.CageNumber!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.CageNumber))
                 admissionModel.CageNumber=updateDto.CageNumber;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             
             return Ok(admissionModel.ToReadAdmissionDto());
         }
@@ -103,9 +123,9 @@ namespace api.Controllers
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var admissionModel= _context.Admissions.FirstOrDefault(x=>x.Id==id);
+            var admissionModel= await _context.Admissions.FirstOrDefaultAsync(x=>x.Id==id);
             if (admissionModel == null)
             {
                 return NotFound();
@@ -113,7 +133,7 @@ namespace api.Controllers
 
             _context.Admissions.Remove(admissionModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

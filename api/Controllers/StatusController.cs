@@ -7,6 +7,7 @@ using api.Data;
 using api.Mappers;
 using api.Dtos.Status;
 using api.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -21,18 +22,19 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var statuses=_context.Statuses.ToList()
-            .Select(s=>s.ToReadStatusDto());
+            var statuses=await _context.Statuses
+            .Select(s=>s.ToReadStatusDto()).ToListAsync();
 
             return Ok(statuses);
         }
 
-        [HttpGet ("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet ("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var status = _context.Statuses.Find(Id);
+            var status = await _context.Statuses.Include(a=>a.Admission)
+            .FirstOrDefaultAsync(a=>a.Id==id);
             
             if(status== null)
             {
@@ -43,18 +45,30 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateStatusDto statusDto)
+        public async Task<IActionResult> Create([FromBody] CreateStatusDto statusDto)
         {
+            // Validar que el DTO no sea nulo
+            if (statusDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            // Validar que el PatientId exista
+            var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == statusDto.AdmissionId);
+            if (!admissionExists)
+                return BadRequest("El AdmissionId no existe.");
+
             var statusModel = statusDto.ToStatusFromCreateDto();
-            _context.Statuses.Add(statusModel);
-            _context.SaveChanges();
+            await _context.Statuses.AddAsync(statusModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDto());
         }
 
-        [HttpPatch]
-        public IActionResult Patch(int id,  [FromBody] UpdateStatusDto updateDto)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id,  [FromBody] UpdateStatusDto updateDto)
         {
-            var statusModel= _context.Statuses.FirstOrDefault(x=>x.Id == id);
+            if (updateDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id == id);
 
             if (statusModel == null)
             {
@@ -63,19 +77,19 @@ namespace api.Controllers
 
             if(updateDto.AdmissionId.HasValue)
             {
-                var admissionExists = _context.Admissions.Any(p => p.Id == updateDto.AdmissionId.Value);
+                var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == updateDto.AdmissionId.Value);
                 if (!admissionExists)
-                return BadRequest("El AdmissionId no existe.");
+                    return BadRequest("El AdmissionId no existe.");
                 statusModel.AdmissionId= updateDto.AdmissionId.Value;
             }
 
-            if(updateDto.CurrentStatus!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.CurrentStatus))
                 statusModel.CurrentStatus=updateDto.CurrentStatus;
 
-            if(updateDto.Notes !=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Notes))
                 statusModel.Notes=updateDto.Notes;
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(statusModel.ToReadStatusDto());
         }
@@ -83,9 +97,9 @@ namespace api.Controllers
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var statusModel= _context.Statuses.FirstOrDefault(x=>x.Id==id);
+            var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id==id);
             if (statusModel == null)
             {
                 return NotFound();
@@ -93,7 +107,7 @@ namespace api.Controllers
 
             _context.Statuses.Remove(statusModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

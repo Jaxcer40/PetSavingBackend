@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using api.Mappers;
 using api.Dtos.Client;
 using System.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -21,18 +22,18 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var clients= _context.Clients.ToList()
-            .Select(s=>s.ToReadClientDto());
+            var clients= await _context.Clients
+            .Select(s=>s.ToReadClientDto()).ToListAsync();
 
             return Ok(clients);
         }
 
-        [HttpGet("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var client= _context.Clients.Find(Id);
+            var client= await _context.Clients.FindAsync(id);
 
             if (client == null)
             {
@@ -43,37 +44,44 @@ namespace api.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateClientDto clientDto)
+        public async Task<IActionResult> Create([FromBody] CreateClientDto clientDto)
         {
+            // Validar que el DTO no sea nulo
+            if (clientDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
             var clientModel = clientDto.ToClientFromCreateDto();
-            _context.Clients.Add(clientModel);
-            _context.SaveChanges();
+            await _context.Clients.AddAsync(clientModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById), new {id=clientModel.Id}, clientModel.ToReadClientDto());
         }
 
-        [HttpPatch("{Id}")]
-        public IActionResult Patch(int id, [FromBody]UpdateClientDto updateDto)
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> Patch(int id, [FromBody]UpdateClientDto updateDto)
         {
-            var clientModel= _context.Clients.FirstOrDefault(x=>x.Id==id);
+            if (updateDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+            var clientModel= await _context.Clients.FirstOrDefaultAsync(x=>x.Id==id);
 
             if (clientModel == null)
             {
                 return NotFound();
             }
 
-            if(updateDto.FirstName!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.FirstName))
                 clientModel.FirstName=updateDto.FirstName;
             
-            if(updateDto.LastName!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.LastName))
                 clientModel.LastName=updateDto.LastName;
             
-            if(updateDto.Email!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Email))
                 clientModel.Email=updateDto.Email;
 
-            if(updateDto.PhoneNumber!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.PhoneNumber))
                 clientModel.PhoneNumber=updateDto.PhoneNumber;
 
-            if(updateDto.Address!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.Address))
                 clientModel.Address=updateDto.Address;
             
             if(updateDto.BirthDate.HasValue)
@@ -82,13 +90,13 @@ namespace api.Controllers
             if(updateDto.RegistrationDate.HasValue)
                 clientModel.RegistrationDate=updateDto.RegistrationDate.Value;
 
-            if(updateDto.EmergencyContactName!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.EmergencyContactName))
                 clientModel.EmergencyContactName=updateDto.EmergencyContactName;
             
-            if(updateDto.EmergencyContactPhone!=null)
+            if(!string.IsNullOrWhiteSpace(updateDto.EmergencyContactPhone))
                 clientModel.EmergencyContactPhone=updateDto.EmergencyContactPhone;
             
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(clientModel.ToReadClientDto());
         }
@@ -96,9 +104,9 @@ namespace api.Controllers
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var clientModel= _context.Clients.FirstOrDefault(x=>x.Id==id);
+            var clientModel= await _context.Clients.FirstOrDefaultAsync(x=>x.Id==id);
             if (clientModel == null)
             {
                 return NotFound();
@@ -106,7 +114,7 @@ namespace api.Controllers
 
             _context.Clients.Remove(clientModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

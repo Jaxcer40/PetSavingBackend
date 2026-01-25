@@ -7,6 +7,7 @@ using api.Data;
 using api.Mappers;
 using api.Dtos.Inventory;
 using Humanizer;
+using Microsoft.EntityFrameworkCore;
 
 namespace api.Controllers
 {
@@ -21,20 +22,20 @@ namespace api.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var inventories= _context.Inventories.ToList()
-            .Select(s => s.ToReadInventoryDto());
+            var inventories= await _context.Inventories
+            .Select(s => s.ToReadInventoryDto()).ToListAsync();
 
             return Ok(inventories);
         
         }
 
         // Get por Id
-        [HttpGet ("{Id}")]
-        public IActionResult GetById([FromRoute] int Id)
+        [HttpGet ("{id}")]
+        public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var inventory = _context.Inventories.Find(Id);
+            var inventory = await _context.Inventories.FindAsync(id);
             
             if(inventory== null)
             {
@@ -46,42 +47,54 @@ namespace api.Controllers
 
         //Post para Inventory
         [HttpPost]
-        public IActionResult Create([FromBody] CreateInventoryDto inventoryDto)
+        public async Task<IActionResult> Create([FromBody] CreateInventoryDto inventoryDto)
         {
+            // Validar que el DTO no sea nulo
+            if (inventoryDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+
+
             var inventoryModel= inventoryDto.ToInventoryFromCreateDto();
-            _context.Inventories.Add(inventoryModel);
-            _context.SaveChanges();
+            await _context.Inventories.AddAsync(inventoryModel);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(GetById),new {id=inventoryModel.Id}, inventoryModel.ToReadInventoryDto());
         }
 
         //Update por id
         //Path god > Put zzz
         [HttpPatch("{id}")]
-        public IActionResult Patch(int id, [FromBody] UpdateInventoryDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDto updateDto)
         {
-            var inventoryModel = _context.Inventories.FirstOrDefault(x => x.Id == id);
+            
+            if (updateDto == null)
+                return BadRequest("El cuerpo de la solicitud está vacío.");
+            
+            var inventoryModel = await _context.Inventories.FirstOrDefaultAsync(x => x.Id == id);
 
             if (inventoryModel == null)
             {
                 return NotFound();
             }
 
-            if (updateDto.Name != null)
+            if (!string.IsNullOrWhiteSpace(updateDto.Name))
                 inventoryModel.Name = updateDto.Name;
 
-            if (updateDto.Description != null)
+            if (!string.IsNullOrWhiteSpace(updateDto.Description))
                 inventoryModel.Description = updateDto.Description;
 
             if (updateDto.UnitValue.HasValue)
                 inventoryModel.UnitValue = updateDto.UnitValue.Value;
 
+            if (updateDto.Stock.HasValue && updateDto.Stock.Value < 0)
+                return BadRequest("El stock no puede ser negativo.");
+
             if (updateDto.Stock.HasValue)
                 inventoryModel.Stock = updateDto.Stock.Value;
 
-            if (updateDto.SupplerName != null)
+            if (!string.IsNullOrWhiteSpace(updateDto.SupplerName))
                 inventoryModel.SupplerName = updateDto.SupplerName;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return Ok(inventoryModel.ToReadInventoryDto());
         }
@@ -89,9 +102,9 @@ namespace api.Controllers
         //Delete por id
         [HttpDelete]
         [Route("{id}")]
-        public IActionResult Delete([FromRoute] int id)
+        public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var inventoryModel= _context.Inventories.FirstOrDefault(x=>x.Id==id);
+            var inventoryModel= await _context.Inventories.FirstOrDefaultAsync(x=>x.Id==id);
             if (inventoryModel == null)
             {
                 return NotFound();
@@ -99,7 +112,7 @@ namespace api.Controllers
 
             _context.Inventories.Remove(inventoryModel);
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
