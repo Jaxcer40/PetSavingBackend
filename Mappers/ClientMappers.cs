@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PetSavingBackend.Dtos.Client;
+using PetSavingBackend.DTOs.Client;
 using PetSavingBackend.Models;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
@@ -10,9 +10,9 @@ namespace PetSavingBackend.Mappers
 {
     public static class ClientMappers
     {
-        public static ReadClientDto ToReadClientDto(this Client clientModel)
+        public static ReadClientDTO ToReadClientDTO(this Client clientModel)
         {
-            return new ReadClientDto
+            return new ReadClientDTO
             {
                 Id= clientModel.Id,
                 FirstName=clientModel.FirstName,
@@ -26,18 +26,18 @@ namespace PetSavingBackend.Mappers
             };
         }
 
-        public static Client ToClientFromCreateDto(this CreateClientDto clientDto)
+        public static Client ToClientFromCreateDTO(this CreateClientDTO clientDTO)
         {
             return new Client
             {
-                FirstName=clientDto.FirstName,
-                LastName=clientDto.LastName,
-                Email=clientDto.Email,
-                PhoneNumber=clientDto.PhoneNumber,
-                Address=clientDto.Address,
-                BirthDate=clientDto.BirthDate,
-                EmergencyContactName=clientDto.EmergencyContactName,
-                EmergencyContactPhone=clientDto.EmergencyContactPhone,
+                FirstName=clientDTO.FirstName,
+                LastName=clientDTO.LastName,
+                Email=clientDTO.Email,
+                PhoneNumber=clientDTO.PhoneNumber,
+                Address=clientDTO.Address,
+                BirthDate=clientDTO.BirthDate,
+                EmergencyContactName=clientDTO.EmergencyContactName,
+                EmergencyContactPhone=clientDTO.EmergencyContactPhone,
             };
         }
     }

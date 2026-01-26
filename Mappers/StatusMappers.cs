@@ -2,21 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PetSavingBackend.Dtos.Status;
+using PetSavingBackend.DTOs.Status;
 using PetSavingBackend.Models;
 
 namespace PetSavingBackend.Mappers
 {
     public static class StatusMappers
     {
-        public static ReadStatusDto ToReadStatusDto(this Status statusModel)
+        public static ReadStatusDTO ToReadStatusDTO(this Status statusModel)
         {
-            return new ReadStatusDto
+            return new ReadStatusDTO
             {
                 Id = statusModel.Id,
                 CurrentStatus = statusModel.CurrentStatus,
                 Notes = statusModel.Notes,
-                Admission = new AdmissionSummaryDto
+                Admission = new AdmissionSummaryDTO
                 {
                     AdmissionDate = statusModel.Admission.AdmissionDate,
                     AdmissionReason = statusModel.Admission.AdmissionReason
@@ -25,13 +25,13 @@ namespace PetSavingBackend.Mappers
 
         }
 
-        public static Status ToStatusFromCreateDto(this CreateStatusDto statusDto)
+        public static Status ToStatusFromCreateDTO(this CreateStatusDTO statusDTO)
         {
             return new Status
             {
-               AdmissionId= statusDto.AdmissionId,
-               CurrentStatus= statusDto.CurrentStatus,
-                Notes=statusDto.Notes
+               AdmissionId= statusDTO.AdmissionId,
+               CurrentStatus= statusDTO.CurrentStatus,
+                Notes=statusDTO.Notes
             };
         }
     }

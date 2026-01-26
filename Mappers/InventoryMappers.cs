@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PetSavingBackend.Dtos.Inventory;
+using PetSavingBackend.DTOs.Inventory;
 using PetSavingBackend.Models;
 using Humanizer;
 
@@ -10,9 +10,9 @@ namespace PetSavingBackend.Mappers
 {
     public static class InventoryMappers
     {
-        public static ReadInentoryDto ToReadInventoryDto(this Inventory inventoryModel)
+        public static ReadInentoryDTO ToReadInventoryDTO(this Inventory inventoryModel)
         {
-            return new ReadInentoryDto
+            return new ReadInentoryDTO
             {
                 Id= inventoryModel.Id,
                 Name= inventoryModel.Name,
@@ -22,15 +22,15 @@ namespace PetSavingBackend.Mappers
             };
         }
 
-        public static Inventory ToInventoryFromCreateDto(this CreateInventoryDto inventoryDto)
+        public static Inventory ToInventoryFromCreateDTO(this CreateInventoryDTO inventoryDTO)
         {
             return new Inventory
             {
-                Name= inventoryDto.Name,
-                Description= inventoryDto.Description,
-                UnitValue=inventoryDto.UnitValue,
-                Stock=inventoryDto.Stock,
-                SupplerName=inventoryDto.SupplerName
+                Name= inventoryDTO.Name,
+                Description= inventoryDTO.Description,
+                UnitValue=inventoryDTO.UnitValue,
+                Stock=inventoryDTO.Stock,
+                SupplerName=inventoryDTO.SupplerName
 
             };
         }

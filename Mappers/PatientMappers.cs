@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PetSavingBackend.Dtos.Admission;
-using PetSavingBackend.Dtos.Patient;
+using PetSavingBackend.DTOs.Admission;
+using PetSavingBackend.DTOs.Patient;
 using PetSavingBackend.Models;
 
 namespace PetSavingBackend.Mappers
 {
     public static class PatientMappers
     {
-        public static ReadPatientDto ToReadPatientDto(this Patient patientModel)
+        public static ReadPatientDTO ToReadPatientDTO(this Patient patientModel)
         {
-            return new ReadPatientDto
+            return new ReadPatientDTO
             {
                 Id= patientModel.Id,
                 Name=patientModel.Name,
@@ -23,7 +23,7 @@ namespace PetSavingBackend.Mappers
                 Weight=patientModel.Weight,
                 AdoptedDate=patientModel.AdoptedDate,
 
-                Client= new ClientSummaryDto
+                Client= new ClientSummaryDTO
                 {
                     FirstName=patientModel.Client.FirstName,
                     LastName=patientModel.Client.LastName
@@ -31,20 +31,20 @@ namespace PetSavingBackend.Mappers
             };
         }
 
-        public static Patient ToPatientFromCreateDto(this CreatePatientDto patientDto)
+        public static Patient ToPatientFromCreateDTO(this CreatePatientDTO patientDTO)
         {
             return new Patient
             {
-                Name=patientDto.Name,
-                Species=patientDto.Species,
-                Breed=patientDto.Breed,
-                Gender=patientDto.Gender,
-                BirthDate=patientDto.BirthDate,
-                Weight=patientDto.Weight,
-                AdoptedDate=patientDto.AdoptedDate,  
+                Name=patientDTO.Name,
+                Species=patientDTO.Species,
+                Breed=patientDTO.Breed,
+                Gender=patientDTO.Gender,
+                BirthDate=patientDTO.BirthDate,
+                Weight=patientDTO.Weight,
+                AdoptedDate=patientDTO.AdoptedDate,  
 
                 //Lave foranea a Client
-                ClientId= patientDto.ClientId,
+                ClientId= patientDTO.ClientId,
             };
         }
 

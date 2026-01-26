@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Patient
+namespace PetSavingBackend.DTOs.Patient
 {
-    public class UpdatePatientDto
+    public class UpdatePatientDTO
     {
         //Llave foranea a Client
         public int? ClientId {get; set; }

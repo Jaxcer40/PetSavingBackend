@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Inventory;
+using PetSavingBackend.DTOs.Inventory;
 using Humanizer;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +25,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var inventories= await _context.Inventories
-            .Select(s => s.ToReadInventoryDto()).ToListAsync();
+            .Select(s => s.ToReadInventoryDTO()).ToListAsync();
 
             return Ok(inventories);
         
@@ -42,31 +42,31 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(inventory.ToReadInventoryDto());
+            return Ok(inventory.ToReadInventoryDTO());
         }
 
         //Post para Inventory
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateInventoryDto inventoryDto)
+        public async Task<IActionResult> Create([FromBody] CreateInventoryDTO inventoryDTO)
         {
             // Validar que el DTO no sea nulo
-            if (inventoryDto == null)
+            if (inventoryDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
 
-            var inventoryModel= inventoryDto.ToInventoryFromCreateDto();
+            var inventoryModel= inventoryDTO.ToInventoryFromCreateDTO();
             await _context.Inventories.AddAsync(inventoryModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById),new {id=inventoryModel.Id}, inventoryModel.ToReadInventoryDto());
+            return CreatedAtAction(nameof(GetById),new {id=inventoryModel.Id}, inventoryModel.ToReadInventoryDTO());
         }
 
         //Update por id
         //Path god > Put zzz
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDTO updateDTO)
         {
             
-            if (updateDto == null)
+            if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
             
             var inventoryModel = await _context.Inventories.FirstOrDefaultAsync(x => x.Id == id);
@@ -76,27 +76,27 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if (!string.IsNullOrWhiteSpace(updateDto.Name))
-                inventoryModel.Name = updateDto.Name;
+            if (!string.IsNullOrWhiteSpace(updateDTO.Name))
+                inventoryModel.Name = updateDTO.Name;
 
-            if (!string.IsNullOrWhiteSpace(updateDto.Description))
-                inventoryModel.Description = updateDto.Description;
+            if (!string.IsNullOrWhiteSpace(updateDTO.Description))
+                inventoryModel.Description = updateDTO.Description;
 
-            if (updateDto.UnitValue.HasValue)
-                inventoryModel.UnitValue = updateDto.UnitValue.Value;
+            if (updateDTO.UnitValue.HasValue)
+                inventoryModel.UnitValue = updateDTO.UnitValue.Value;
 
-            if (updateDto.Stock.HasValue && updateDto.Stock.Value < 0)
+            if (updateDTO.Stock.HasValue && updateDTO.Stock.Value < 0)
                 return BadRequest("El stock no puede ser negativo.");
 
-            if (updateDto.Stock.HasValue)
-                inventoryModel.Stock = updateDto.Stock.Value;
+            if (updateDTO.Stock.HasValue)
+                inventoryModel.Stock = updateDTO.Stock.Value;
 
-            if (!string.IsNullOrWhiteSpace(updateDto.SupplerName))
-                inventoryModel.SupplerName = updateDto.SupplerName;
+            if (!string.IsNullOrWhiteSpace(updateDTO.SupplerName))
+                inventoryModel.SupplerName = updateDTO.SupplerName;
 
             await _context.SaveChangesAsync();
 
-            return Ok(inventoryModel.ToReadInventoryDto());
+            return Ok(inventoryModel.ToReadInventoryDTO());
         }
 
         //Delete por id

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Vet
+namespace PetSavingBackend.DTOs.Vet
 {
-    public class ReadVetDto
+    public class ReadVetDTO
     {
         public int Id {get; set;}
 

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Client
+namespace PetSavingBackend.DTOs.Client
 {
-    public class UpdateClientDto
+    public class UpdateClientDTO
     {
         public string? FirstName {set; get;}=string.Empty;
 

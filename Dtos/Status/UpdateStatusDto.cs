@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Status
+namespace PetSavingBackend.DTOs.Status
 {
-    public class UpdateStatusDto
+    public class UpdateStatusDTO
     {
         // llave foranea hacia Admission
         public int? AdmissionId { get; set; }

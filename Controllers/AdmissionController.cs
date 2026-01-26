@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Admission;
+using PetSavingBackend.DTOs.Admission;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,7 +26,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var admissions = await _context.Admissions
-            .Select(s => s.ToReadAdmissionDto()).ToListAsync();
+            .Select(s => s.ToReadAdmissionDTO()).ToListAsync();
 
             return Ok(admissions);
         }
@@ -43,39 +43,39 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(admission.ToReadAdmissionDto());
+            return Ok(admission.ToReadAdmissionDTO());
         }
 
         //Post de Admission
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateAdmissionDto admissionDto)
+        public async Task<IActionResult> Create([FromBody] CreateAdmissionDTO admissionDTO)
         {
 
             // Validar que el DTO no sea nulo
-            if (admissionDto == null)
+            if (admissionDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             // Validar que el PatientId exista
-            var patientExists = await _context.Patients.AnyAsync(p => p.Id == admissionDto.PatientId);
+            var patientExists = await _context.Patients.AnyAsync(p => p.Id == admissionDTO.PatientId);
             if (!patientExists)
                 return BadRequest("El PatientId no existe.");
 
             // Validar que el VetId exista (si lo envías en el DTO)
-            var vetExists = await _context.Vets.AnyAsync(v => v.Id == admissionDto.VetId);
+            var vetExists = await _context.Vets.AnyAsync(v => v.Id == admissionDTO.VetId);
             if (!vetExists)
                 return BadRequest("El VetId no existe.");
 
 
-            var admissionModel = admissionDto.ToAdmissionFromCreateDto();
+            var admissionModel = admissionDTO.ToAdmissionFromCreateDTO();
             await _context.Admissions.AddAsync(admissionModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id= admissionModel.Id}, admissionModel.ToReadAdmissionDto());
+            return CreatedAtAction(nameof(GetById), new {id= admissionModel.Id}, admissionModel.ToReadAdmissionDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAdmissionDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAdmissionDTO updateDTO)
         {
-            if (updateDto == null)
+            if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             var admissionModel = await _context.Admissions.FirstOrDefaultAsync(x=>x.Id==id);
@@ -85,39 +85,39 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if(updateDto.PatientId.HasValue)
+            if(updateDTO.PatientId.HasValue)
             {
-                var patientExists = await _context.Patients.AnyAsync(p => p.Id == updateDto.PatientId.Value);
+                var patientExists = await _context.Patients.AnyAsync(p => p.Id == updateDTO.PatientId.Value);
                 if (!patientExists)
                     return BadRequest("El PatientId no existe.");
 
-                admissionModel.PatientId=updateDto.PatientId.Value;
+                admissionModel.PatientId=updateDTO.PatientId.Value;
             }
 
-            if(updateDto.VetId.HasValue)
+            if(updateDTO.VetId.HasValue)
             {
-                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDto.VetId.Value);
+                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDTO.VetId.Value);
                 if (!vetExists)
                     return BadRequest("El VetId no existe.");
 
-                admissionModel.VetId= updateDto.VetId.Value;
+                admissionModel.VetId= updateDTO.VetId.Value;
             }
 
-            if(updateDto.AdmissionDate.HasValue)
-                admissionModel.AdmissionDate=updateDto.AdmissionDate.Value;
+            if(updateDTO.AdmissionDate.HasValue)
+                admissionModel.AdmissionDate=updateDTO.AdmissionDate.Value;
             
-            if(updateDto.DischargeDate.HasValue)
-                admissionModel.DischargeDate=updateDto.DischargeDate.Value;
+            if(updateDTO.DischargeDate.HasValue)
+                admissionModel.DischargeDate=updateDTO.DischargeDate.Value;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.AdmissionReason))
-                admissionModel.AdmissionReason=updateDto.AdmissionReason;
+            if(!string.IsNullOrWhiteSpace(updateDTO.AdmissionReason))
+                admissionModel.AdmissionReason=updateDTO.AdmissionReason;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.CageNumber))
-                admissionModel.CageNumber=updateDto.CageNumber;
+            if(!string.IsNullOrWhiteSpace(updateDTO.CageNumber))
+                admissionModel.CageNumber=updateDTO.CageNumber;
 
             await _context.SaveChangesAsync();
             
-            return Ok(admissionModel.ToReadAdmissionDto());
+            return Ok(admissionModel.ToReadAdmissionDTO());
         }
 
         //Delete por id

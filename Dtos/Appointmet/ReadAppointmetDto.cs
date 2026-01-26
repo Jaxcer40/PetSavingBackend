@@ -3,20 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Appointmet
+namespace PetSavingBackend.DTOs.Appointmet
 {
-    public class ReadAppointmetDto
+    public class ReadAppointmetDTO
     {
         public int Id { get; set; }
 
         //llave foranea hacia Patient
-        public PatientSummaryDto Patient {get; set;}=null!;
+        public PatientSummaryDTO Patient {get; set;}=null!;
 
         //llave foranea hacia Client
-        public ClientSummaryDto Client {get; set;}=null!;
+        public ClientSummaryDTO Client {get; set;}=null!;
         
         //llave foranea hacia Vet
-        public VetSummaryDto Vet {get; set;}=null!;
+        public VetSummaryDTO Vet {get; set;}=null!;
 
          public DateTime AppointmentDate { get; set; }
 
@@ -29,20 +29,20 @@ namespace PetSavingBackend.Dtos.Appointmet
         public DateOnly FollowUpDate { get; set; }
     }
 
-    public class PatientSummaryDto
+    public class PatientSummaryDTO
     {
         public string Name {get; set;} = string.Empty;
         public string Species { get; set; } = string.Empty;
     }
 
-    public class ClientSummaryDto
+    public class ClientSummaryDTO
     {
         public string FirstName {set; get;}= string.Empty;
 
         public string LastName {set; get;}= string.Empty;
     }
 
-    public class VetSummaryDto
+    public class VetSummaryDTO
     {
         public string FirstName {set; get;}= string.Empty;
 

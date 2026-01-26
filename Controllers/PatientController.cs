@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Patient;
+using PetSavingBackend.DTOs.Patient;
 using Microsoft.EntityFrameworkCore;
 
 namespace PetSavingBackend.Controllers
@@ -26,7 +26,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var patients=await _context.Patients
-            .Select(s=>s.ToReadPatientDto()).ToListAsync();
+            .Select(s=>s.ToReadPatientDTO()).ToListAsync();
            
             return Ok(patients);
         
@@ -44,31 +44,31 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(patient.ToReadPatientDto());
+            return Ok(patient.ToReadPatientDTO());
         }
 
         //Post para patient
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreatePatientDto patientDto)
+        public async Task<IActionResult> Create([FromBody] CreatePatientDTO patientDTO)
         {
             // Validar que el DTO no sea nulo
-            if (patientDto == null)
+            if (patientDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var patientExists = await _context.Clients.AnyAsync(c => c.Id == patientDto.ClientId);
+            var patientExists = await _context.Clients.AnyAsync(c => c.Id == patientDTO.ClientId);
             if (!patientExists)
                 return BadRequest("El ClientId no existe.");
 
-            var patientModel = patientDto.ToPatientFromCreateDto();
+            var patientModel = patientDTO.ToPatientFromCreateDTO();
             await _context.Patients.AddAsync(patientModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById),new {id = patientModel.Id}, patientModel.ToReadPatientDto());
+            return CreatedAtAction(nameof(GetById),new {id = patientModel.Id}, patientModel.ToReadPatientDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdatePatientDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdatePatientDTO updateDTO)
         {
-            if (updateDto == null)
+            if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             var patientModel= await _context.Patients.FirstOrDefaultAsync(x=>x.Id==id);
@@ -78,44 +78,44 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if(updateDto.ClientId.HasValue)
+            if(updateDTO.ClientId.HasValue)
             {
-                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDto.ClientId.Value);
+                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDTO.ClientId.Value);
                 if (!clientExists)
                     return BadRequest("El ClientId no existe.");
-                patientModel.ClientId=updateDto.ClientId.Value;
+                patientModel.ClientId=updateDTO.ClientId.Value;
             }
 
-            if(!string.IsNullOrWhiteSpace(updateDto.Name))
-                patientModel.Name=updateDto.Name;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Name))
+                patientModel.Name=updateDTO.Name;
             
-            if (!string.IsNullOrWhiteSpace(updateDto.Species!))
-                patientModel.Species=updateDto.Species;
+            if (!string.IsNullOrWhiteSpace(updateDTO.Species!))
+                patientModel.Species=updateDTO.Species;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.Breed))
-                patientModel.Breed=updateDto.Breed;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Breed))
+                patientModel.Breed=updateDTO.Breed;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.Gender))
-                patientModel.Gender=updateDto.Gender;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Gender))
+                patientModel.Gender=updateDTO.Gender;
             
-            if (updateDto.BirthDate.HasValue && updateDto.BirthDate.Value > DateTime.UtcNow)
+            if (updateDTO.BirthDate.HasValue && updateDTO.BirthDate.Value > DateTime.UtcNow)
                 return BadRequest("Vienes del futuro??? :O");
 
-            if(updateDto.BirthDate.HasValue)
-                patientModel.BirthDate=updateDto.BirthDate.Value;
+            if(updateDTO.BirthDate.HasValue)
+                patientModel.BirthDate=updateDTO.BirthDate.Value;
             
-            if (updateDto.Weight.HasValue && updateDto.Weight.Value < 0)
+            if (updateDTO.Weight.HasValue && updateDTO.Weight.Value < 0)
                 return BadRequest("El peso no puede ser negativo.");
 
-            if(updateDto.Weight.HasValue)
-                patientModel.Weight=updateDto.Weight.Value;
+            if(updateDTO.Weight.HasValue)
+                patientModel.Weight=updateDTO.Weight.Value;
 
-            if(updateDto.AdoptedDate.HasValue)
-                patientModel.AdoptedDate=updateDto.AdoptedDate.Value;
+            if(updateDTO.AdoptedDate.HasValue)
+                patientModel.AdoptedDate=updateDTO.AdoptedDate.Value;
 
             await _context.SaveChangesAsync();
 
-            return Ok(patientModel.ToReadPatientDto());
+            return Ok(patientModel.ToReadPatientDTO());
         }
 
         //Delete por id

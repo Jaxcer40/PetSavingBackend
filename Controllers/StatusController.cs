@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Status;
+using PetSavingBackend.DTOs.Status;
 using PetSavingBackend.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +25,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var statuses=await _context.Statuses
-            .Select(s=>s.ToReadStatusDto()).ToListAsync();
+            .Select(s=>s.ToReadStatusDTO()).ToListAsync();
 
             return Ok(statuses);
         }
@@ -41,31 +41,31 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(status.ToReadStatusDto());
+            return Ok(status.ToReadStatusDTO());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateStatusDto statusDto)
+        public async Task<IActionResult> Create([FromBody] CreateStatusDTO statusDTO)
         {
             // Validar que el DTO no sea nulo
-            if (statusDto == null)
+            if (statusDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             // Validar que el PatientId exista
-            var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == statusDto.AdmissionId);
+            var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == statusDTO.AdmissionId);
             if (!admissionExists)
                 return BadRequest("El AdmissionId no existe.");
 
-            var statusModel = statusDto.ToStatusFromCreateDto();
+            var statusModel = statusDTO.ToStatusFromCreateDTO();
             await _context.Statuses.AddAsync(statusModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDto());
+            return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id,  [FromBody] UpdateStatusDto updateDto)
+        public async Task<IActionResult> Patch(int id,  [FromBody] UpdateStatusDTO updateDTO)
         {
-            if (updateDto == null)
+            if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id == id);
@@ -75,23 +75,23 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if(updateDto.AdmissionId.HasValue)
+            if(updateDTO.AdmissionId.HasValue)
             {
-                var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == updateDto.AdmissionId.Value);
+                var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == updateDTO.AdmissionId.Value);
                 if (!admissionExists)
                     return BadRequest("El AdmissionId no existe.");
-                statusModel.AdmissionId= updateDto.AdmissionId.Value;
+                statusModel.AdmissionId= updateDTO.AdmissionId.Value;
             }
 
-            if(!string.IsNullOrWhiteSpace(updateDto.CurrentStatus))
-                statusModel.CurrentStatus=updateDto.CurrentStatus;
+            if(!string.IsNullOrWhiteSpace(updateDTO.CurrentStatus))
+                statusModel.CurrentStatus=updateDTO.CurrentStatus;
 
-            if(!string.IsNullOrWhiteSpace(updateDto.Notes))
-                statusModel.Notes=updateDto.Notes;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Notes))
+                statusModel.Notes=updateDTO.Notes;
             
             await _context.SaveChangesAsync();
 
-            return Ok(statusModel.ToReadStatusDto());
+            return Ok(statusModel.ToReadStatusDTO());
         }
 
         //Delete por id

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Patient
+namespace PetSavingBackend.DTOs.Patient
 {
-    public class ReadPatientDto
+    public class ReadPatientDTO
     {
         public int Id {get; set;}
 
         //Llave foranea hacia client
-        public ClientSummaryDto Client {get; set; }=null!;
+        public ClientSummaryDTO Client {get; set; }=null!;
 
         public string Name { get; set; } = string.Empty;
 
@@ -27,7 +27,7 @@ namespace PetSavingBackend.Dtos.Patient
         public DateTime AdoptedDate { get; set; }
     }
 
-    public class ClientSummaryDto
+    public class ClientSummaryDTO
     {
         public string FirstName {set; get;}= string.Empty;
 

@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
 
-namespace PetSavingBackend.Dtos.Vet
+namespace PetSavingBackend.DTOs.Vet
 {
-    public class CreateVetDto
+    public class CreateVetDTO
     {
         [Required]
         public string FirstName {get;set;}=string.Empty;

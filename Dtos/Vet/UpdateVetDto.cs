@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Vet
+namespace PetSavingBackend.DTOs.Vet
 {
-    public class UpdateVetDto
+    public class UpdateVetDTO
     {
         public string? FirstName {get;set;}=string.Empty;
 

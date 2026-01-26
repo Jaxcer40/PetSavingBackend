@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace PetSavingBackend.Dtos.Client
+namespace PetSavingBackend.DTOs.Client
 {
-    public class CreateClientDto
+    public class CreateClientDTO
     {
         [Required]
         public string FirstName {set; get;}=string.Empty;

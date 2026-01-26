@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Appointmet;
+using PetSavingBackend.DTOs.Appointmet;
 using Microsoft.EntityFrameworkCore;
 
 namespace PetSavingBackend.Controllers
@@ -24,7 +24,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var appointmets= await _context.Appointmets
-            .Select(s=> s.ToReadAppointmetDto()).ToListAsync();
+            .Select(s=> s.ToReadAppointmetDTO()).ToListAsync();
            
             return Ok(appointmets);
         }
@@ -41,39 +41,39 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(appointment.ToReadAppointmetDto());
+            return Ok(appointment.ToReadAppointmetDTO());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateAppointmetDto appointmetDto)
+        public async Task<IActionResult> Create([FromBody] CreateAppointmetDTO appointmetDTO)
         {
             // Validar que el DTO no sea nulo
-            if (appointmetDto == null)
+            if (appointmetDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             // Validar que el PatientId exista
-            var patientExists = await _context.Patients.AnyAsync(p => p.Id == appointmetDto.PatientId);
+            var patientExists = await _context.Patients.AnyAsync(p => p.Id == appointmetDTO.PatientId);
             if (!patientExists)
                 return BadRequest("El PatientId no existe.");
 
             // Validar que el ClientId exista
-            var clientExists = await _context.Clients.AnyAsync(c => c.Id == appointmetDto.ClientId);
+            var clientExists = await _context.Clients.AnyAsync(c => c.Id == appointmetDTO.ClientId);
             if (!clientExists)
                 return BadRequest("El PatientId no existe.");
 
             // Validar que el VetId exista (si lo envías en el DTO)
-            var vetExists = await _context.Vets.AnyAsync(v => v.Id == appointmetDto.VetId);
+            var vetExists = await _context.Vets.AnyAsync(v => v.Id == appointmetDTO.VetId);
             if (!vetExists)
                 return BadRequest("El VetId no existe.");
 
-            var appointmetModel= appointmetDto.ToAppointmetFromCreateDto();
+            var appointmetModel= appointmetDTO.ToAppointmetFromCreateDTO();
             await _context.Appointmets.AddAsync(appointmetModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id= appointmetModel.Id}, appointmetModel.ToReadAppointmetDto());
+            return CreatedAtAction(nameof(GetById), new {id= appointmetModel.Id}, appointmetModel.ToReadAppointmetDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAppointmetDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAppointmetDTO updateDTO)
         {
             var appointmetModel= await _context.Appointmets.FirstOrDefaultAsync(x=>x.Id==id);
 
@@ -82,49 +82,49 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if(updateDto.PatientId.HasValue)
+            if(updateDTO.PatientId.HasValue)
             {
-                var patientExists = await _context.Patients.AnyAsync(p => p.Id == updateDto.PatientId.Value);
+                var patientExists = await _context.Patients.AnyAsync(p => p.Id == updateDTO.PatientId.Value);
                 if (!patientExists)
                 return BadRequest("El PatientId no existe.");
-                appointmetModel.PatientId=updateDto.PatientId.Value;
+                appointmetModel.PatientId=updateDTO.PatientId.Value;
             }
 
-            if(updateDto.ClientId.HasValue)
+            if(updateDTO.ClientId.HasValue)
             {
-                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDto.ClientId.Value);
+                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDTO.ClientId.Value);
                 if (!clientExists)
                     return BadRequest("El ClientId no existe.");
 
-                appointmetModel.ClientId=updateDto.ClientId.Value;
+                appointmetModel.ClientId=updateDTO.ClientId.Value;
             }
 
-            if(updateDto.VetId.HasValue)
+            if(updateDTO.VetId.HasValue)
             {
-                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDto.VetId.Value);
+                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDTO.VetId.Value);
                 if (!vetExists)
                     return BadRequest("El VetId no existe.");
-                appointmetModel.VetId=updateDto.VetId.Value;
+                appointmetModel.VetId=updateDTO.VetId.Value;
             }
 
-            if(updateDto.AppointmentDate.HasValue)
-                appointmetModel.AppointmentDate=updateDto.AppointmentDate.Value;
+            if(updateDTO.AppointmentDate.HasValue)
+                appointmetModel.AppointmentDate=updateDTO.AppointmentDate.Value;
             
-            if(updateDto.Diagnosis!=null)
-                appointmetModel.Diagnosis=updateDto.Diagnosis;
+            if(updateDTO.Diagnosis!=null)
+                appointmetModel.Diagnosis=updateDTO.Diagnosis;
             
-            if(updateDto.Treatment!=null)
-                appointmetModel.Treatment=updateDto.Treatment;
+            if(updateDTO.Treatment!=null)
+                appointmetModel.Treatment=updateDTO.Treatment;
             
-            if(updateDto.Notes!=null)
-                appointmetModel.Notes=updateDto.Notes;
+            if(updateDTO.Notes!=null)
+                appointmetModel.Notes=updateDTO.Notes;
             
-            if(updateDto.FollowUpDate.HasValue)
-                appointmetModel.FollowUpDate=updateDto.FollowUpDate.Value;
+            if(updateDTO.FollowUpDate.HasValue)
+                appointmetModel.FollowUpDate=updateDTO.FollowUpDate.Value;
 
             await _context.SaveChangesAsync();
 
-            return Ok(appointmetModel.ToReadAppointmetDto());
+            return Ok(appointmetModel.ToReadAppointmetDTO());
 
         }
 

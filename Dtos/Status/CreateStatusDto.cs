@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Status
+namespace PetSavingBackend.DTOs.Status
 {
-    public class CreateStatusDto
+    public class CreateStatusDTO
     {
         // llave foranea hacia Admission
         [Required]

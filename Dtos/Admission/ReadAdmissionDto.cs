@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.Dtos.Admission
+namespace PetSavingBackend.DTOs.Admission
 {
-    public class ReadAdmissionDto
+    public class ReadAdmissionDTO
     {
         public int Id { get; set; }
 
         // llave foranea hacia Patient
-        public PatientSummaryDto Patient {get; set;}=null!;
+        public PatientSummaryDTO Patient {get; set;}=null!;
 
         // llave foranea hacia Vet
-        public VetSummaryDto Vet {get; set;}=null!;
+        public VetSummaryDTO Vet {get; set;}=null!;
 
         public DateTime AdmissionDate { get; set; }
 
@@ -26,14 +26,14 @@ namespace PetSavingBackend.Dtos.Admission
 
     }
 
-    public class PatientSummaryDto
+    public class PatientSummaryDTO
     {
         public string Name {get; set;} = string.Empty;
         public string Species { get; set; } = string.Empty;
 
     }
 
-    public class VetSummaryDto
+    public class VetSummaryDTO
     {
         public string FirstName { get; set; } = string.Empty;
         public string LastName {get;set;}= string.Empty;

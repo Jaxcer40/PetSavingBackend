@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using PetSavingBackend.Data;
 using Microsoft.AspNetCore.Mvc;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Client;
+using PetSavingBackend.DTOs.Client;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,7 +25,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var clients= await _context.Clients
-            .Select(s=>s.ToReadClientDto()).ToListAsync();
+            .Select(s=>s.ToReadClientDTO()).ToListAsync();
 
             return Ok(clients);
         }
@@ -40,26 +40,26 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(client.ToReadClientDto());
+            return Ok(client.ToReadClientDTO());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateClientDto clientDto)
+        public async Task<IActionResult> Create([FromBody] CreateClientDTO clientDTO)
         {
             // Validar que el DTO no sea nulo
-            if (clientDto == null)
+            if (clientDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var clientModel = clientDto.ToClientFromCreateDto();
+            var clientModel = clientDTO.ToClientFromCreateDTO();
             await _context.Clients.AddAsync(clientModel);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id=clientModel.Id}, clientModel.ToReadClientDto());
+            return CreatedAtAction(nameof(GetById), new {id=clientModel.Id}, clientModel.ToReadClientDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody]UpdateClientDto updateDto)
+        public async Task<IActionResult> Patch(int id, [FromBody]UpdateClientDTO updateDTO)
         {
-            if (updateDto == null)
+            if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             var clientModel= await _context.Clients.FirstOrDefaultAsync(x=>x.Id==id);
@@ -69,36 +69,36 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            if(!string.IsNullOrWhiteSpace(updateDto.FirstName))
-                clientModel.FirstName=updateDto.FirstName;
+            if(!string.IsNullOrWhiteSpace(updateDTO.FirstName))
+                clientModel.FirstName=updateDTO.FirstName;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.LastName))
-                clientModel.LastName=updateDto.LastName;
+            if(!string.IsNullOrWhiteSpace(updateDTO.LastName))
+                clientModel.LastName=updateDTO.LastName;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.Email))
-                clientModel.Email=updateDto.Email;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Email))
+                clientModel.Email=updateDTO.Email;
 
-            if(!string.IsNullOrWhiteSpace(updateDto.PhoneNumber))
-                clientModel.PhoneNumber=updateDto.PhoneNumber;
+            if(!string.IsNullOrWhiteSpace(updateDTO.PhoneNumber))
+                clientModel.PhoneNumber=updateDTO.PhoneNumber;
 
-            if(!string.IsNullOrWhiteSpace(updateDto.Address))
-                clientModel.Address=updateDto.Address;
+            if(!string.IsNullOrWhiteSpace(updateDTO.Address))
+                clientModel.Address=updateDTO.Address;
             
-            if(updateDto.BirthDate.HasValue)
-                clientModel.BirthDate=updateDto.BirthDate.Value;
+            if(updateDTO.BirthDate.HasValue)
+                clientModel.BirthDate=updateDTO.BirthDate.Value;
             
-            if(updateDto.RegistrationDate.HasValue)
-                clientModel.RegistrationDate=updateDto.RegistrationDate.Value;
+            if(updateDTO.RegistrationDate.HasValue)
+                clientModel.RegistrationDate=updateDTO.RegistrationDate.Value;
 
-            if(!string.IsNullOrWhiteSpace(updateDto.EmergencyContactName))
-                clientModel.EmergencyContactName=updateDto.EmergencyContactName;
+            if(!string.IsNullOrWhiteSpace(updateDTO.EmergencyContactName))
+                clientModel.EmergencyContactName=updateDTO.EmergencyContactName;
             
-            if(!string.IsNullOrWhiteSpace(updateDto.EmergencyContactPhone))
-                clientModel.EmergencyContactPhone=updateDto.EmergencyContactPhone;
+            if(!string.IsNullOrWhiteSpace(updateDTO.EmergencyContactPhone))
+                clientModel.EmergencyContactPhone=updateDTO.EmergencyContactPhone;
             
             await _context.SaveChangesAsync();
 
-            return Ok(clientModel.ToReadClientDto());
+            return Ok(clientModel.ToReadClientDTO());
         }
 
         //Delete por id

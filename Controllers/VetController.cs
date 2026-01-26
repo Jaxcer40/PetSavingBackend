@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
-using PetSavingBackend.Dtos.Vet;
+using PetSavingBackend.DTOs.Vet;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Formats.Tar;
@@ -26,7 +26,7 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> GetAll()
         {
             var vets= await _context.Vets
-            .Select(s=>s.ToReadVetDto()).ToListAsync();
+            .Select(s=>s.ToReadVetDTO()).ToListAsync();
            
             return Ok(vets);
         }        
@@ -41,25 +41,25 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(vet.ToReadVetDto());
+            return Ok(vet.ToReadVetDTO());
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CreateVetDto vetDto)
+        public async Task<IActionResult> Create([FromBody] CreateVetDTO vetDTO)
         {
             // Validar que el DTO no sea nulo
-            if (vetDto == null)
+            if (vetDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var vetModel= vetDto.ToVetFromCreateDto();
+            var vetModel= vetDTO.ToVetFromCreateDTO();
             await _context.Vets.AddAsync(vetModel);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetById), new {id=vetModel.Id}, vetModel.ToReadVetDto());
+            return CreatedAtAction(nameof(GetById), new {id=vetModel.Id}, vetModel.ToReadVetDTO());
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateVetDto updateVet)
+        public async Task<IActionResult> Patch(int id, [FromBody] UpdateVetDTO updateVet)
         {
             if (updateVet == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
@@ -96,7 +96,7 @@ namespace PetSavingBackend.Controllers
                 vetModel.Activity= updateVet.Activity;
 
             await _context.SaveChangesAsync();
-            return Ok(vetModel.ToReadVetDto());
+            return Ok(vetModel.ToReadVetDTO());
         }
 
         //Delete por id

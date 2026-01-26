@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace PetSavingBackend.Dtos.Patient
+namespace PetSavingBackend.DTOs.Patient
 {
-    public class CreatePatientDto
+    public class CreatePatientDTO
     {
         //Llave foranea a Client
         [Required]
