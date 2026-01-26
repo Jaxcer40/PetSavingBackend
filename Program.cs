@@ -23,6 +23,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+// Show SwaggerUI shorcut in console
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    var addresses = app.Urls;
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+
+    logger.LogInformation("Swagger UI is available at {SwaggerUrl}", $"{addresses.First()}/swagger/index.html");
+});
+
 //Este middleware redirige las solicitudes HTTP a HTTPS.
 app.UseHttpsRedirection();
 

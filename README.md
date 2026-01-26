@@ -4,7 +4,7 @@ Proyecto de .net webapi para Pet Saving.
 
 ## Inicializar base de datos
 
-1. AgregaR migraciones
+1. Agregar migraciones
 
    ```bash
    dotnet ef migrations add Init
@@ -21,3 +21,6 @@ Proyecto de .net webapi para Pet Saving.
    ```bash
    dotnet run
    ```
+
+## SwaggerUI
+- http://localhost:5126/swagger/index.html
