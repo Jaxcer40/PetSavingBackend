@@ -1,6 +1,8 @@
 // Este es el punto de entrada principal de la aplicación API.
 using PetSavingBackend.Data;
 using Microsoft.EntityFrameworkCore;
+using PetSavingBackend.Interfaces;
+using PetSavingBackend.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +14,10 @@ builder.Services.AddSwaggerGen();
 // Databse conection
 builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+//Dependency Injection 
+builder.Services.AddScoped<IPatientRepository, PatientRepository>();
+builder.Services.AddScoped<IClientRepository, ClientRepository>();
 
 // Este es el punto donde se configura la canalización de solicitudes HTTP.
 var app = builder.Build();

@@ -7,6 +7,7 @@ using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
 using PetSavingBackend.DTOs.Patient;
 using Microsoft.EntityFrameworkCore;
+using PetSavingBackend.Interfaces;
 
 namespace PetSavingBackend.Controllers
 {
@@ -16,29 +17,25 @@ namespace PetSavingBackend.Controllers
     //Get de Patient
     public class PatientController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public PatientController(ApplicationDBContext context)
+        private readonly IPatientRepository _patientRepo;
+        public PatientController(IPatientRepository patientRepo)
         {
-            _context = context;
+            _patientRepo=patientRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var patients=await _context.Patients
-            .Select(s=>s.ToReadPatientDTO()).ToListAsync();
-           
-            return Ok(patients);
-        
+            var patients = await _patientRepo.GetAllAsync();
+            return Ok(patients.Select(c=>c.ToReadPatientDTO()));
         }
+
 
         //Get por Id
         [HttpGet ("{id}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var patient = await _context.Patients.Include(a=>a.Client)
-            .FirstOrDefaultAsync(a=>a.Id==id);
-            
+            var patient = await _patientRepo.GetByIdAsync(id);
             if(patient== null)
             {
                 return NotFound();
@@ -55,13 +52,8 @@ namespace PetSavingBackend.Controllers
             if (patientDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var patientExists = await _context.Clients.AnyAsync(c => c.Id == patientDTO.ClientId);
-            if (!patientExists)
-                return BadRequest("El ClientId no existe.");
-
             var patientModel = patientDTO.ToPatientFromCreateDTO();
-            await _context.Patients.AddAsync(patientModel);
-            await _context.SaveChangesAsync();
+            await _patientRepo.CreateAsync(patientModel);
             return CreatedAtAction(nameof(GetById),new {id = patientModel.Id}, patientModel.ToReadPatientDTO());
         }
 
@@ -71,49 +63,12 @@ namespace PetSavingBackend.Controllers
             if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var patientModel= await _context.Patients.FirstOrDefaultAsync(x=>x.Id==id);
+            var patientModel= await _patientRepo.PatchAsync(id, updateDTO);
 
             if (patientModel == null)
             {
                 return NotFound();
             }
-
-            if(updateDTO.ClientId.HasValue)
-            {
-                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDTO.ClientId.Value);
-                if (!clientExists)
-                    return BadRequest("El ClientId no existe.");
-                patientModel.ClientId=updateDTO.ClientId.Value;
-            }
-
-            if(!string.IsNullOrWhiteSpace(updateDTO.Name))
-                patientModel.Name=updateDTO.Name;
-            
-            if (!string.IsNullOrWhiteSpace(updateDTO.Species!))
-                patientModel.Species=updateDTO.Species;
-            
-            if(!string.IsNullOrWhiteSpace(updateDTO.Breed))
-                patientModel.Breed=updateDTO.Breed;
-            
-            if(!string.IsNullOrWhiteSpace(updateDTO.Gender))
-                patientModel.Gender=updateDTO.Gender;
-            
-            if (updateDTO.BirthDate.HasValue && updateDTO.BirthDate.Value > DateTime.UtcNow)
-                return BadRequest("Vienes del futuro??? :O");
-
-            if(updateDTO.BirthDate.HasValue)
-                patientModel.BirthDate=updateDTO.BirthDate.Value;
-            
-            if (updateDTO.Weight.HasValue && updateDTO.Weight.Value < 0)
-                return BadRequest("El peso no puede ser negativo.");
-
-            if(updateDTO.Weight.HasValue)
-                patientModel.Weight=updateDTO.Weight.Value;
-
-            if(updateDTO.AdoptedDate.HasValue)
-                patientModel.AdoptedDate=updateDTO.AdoptedDate.Value;
-
-            await _context.SaveChangesAsync();
 
             return Ok(patientModel.ToReadPatientDTO());
         }
@@ -123,15 +78,11 @@ namespace PetSavingBackend.Controllers
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var patientModel=  await _context.Patients.FirstOrDefaultAsync(x=>x.Id==id);
+            var patientModel=  await _patientRepo.DeleteAsync(id);
             if (patientModel == null)
             {
                 return NotFound();
             }
-
-            _context.Patients.Remove(patientModel);
-
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
