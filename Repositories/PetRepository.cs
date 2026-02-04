@@ -25,7 +25,12 @@ namespace PetSavingBackend.Repositories
         {
             await _context.Pets.AddAsync(petModel);
             await _context.SaveChangesAsync();
-            return petModel;
+
+            var petWithClient = await _context.Pets
+                .Include(p => p.Client)
+                .FirstOrDefaultAsync(p => p.Id == petModel.Id);
+
+            return petWithClient!;
         }
 
         public async Task<Pet?> DeleteAsync(int id)

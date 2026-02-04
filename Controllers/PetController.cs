@@ -78,8 +78,9 @@ namespace PetSavingBackend.Controllers
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
             var petModel = petDTO.ToPetFromCreateDTO();
-            await _petRepo.CreateAsync(petModel);
-            return CreatedAtAction(nameof(GetById),new {id = petModel.Id}, petModel.ToReadPetDTO());
+            var petWithClient = await _petRepo.CreateAsync(petModel);
+
+            return CreatedAtAction(nameof(GetById),new {id = petWithClient.Id}, petWithClient.ToReadPetDTO());
         }
 
         [HttpPatch("{id:int}")]
