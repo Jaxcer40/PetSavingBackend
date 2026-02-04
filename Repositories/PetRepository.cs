@@ -122,6 +122,11 @@ namespace PetSavingBackend.Repositories
                 existingPet.Rating=updateDTO.Rating.Value;
 
             await _context.SaveChangesAsync();
+            
+            var petWithClient = await _context.Pets
+                .Include(p => p.Client)
+                .FirstOrDefaultAsync(p => p.Id == existingPet.Id);
+    
             return existingPet;
         }
     }
