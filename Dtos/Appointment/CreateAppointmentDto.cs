@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace PetSavingBackend.DTOs.Appointmet
+namespace PetSavingBackend.DTOs.Appointment
 {
-    public class CreateAppointmetDTO
+    public class CreateAppointmentDTO
     {
         //llave foranea hacia Pet
         [Required]

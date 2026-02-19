@@ -29,7 +29,7 @@ namespace PetSavingBackend.Models
         public string Activity { get; set; } = string.Empty;
 
         //relacion uno a muchos con Appointmet 
-        public ICollection<Appointmet> Appointmets { get; set; } = new List<Appointmet>();
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
 
         //relacion uno a muchos con Admission
         public ICollection<Admission> Admissions { get; set; } = new List<Admission>();

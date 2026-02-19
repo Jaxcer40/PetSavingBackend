@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace PetSavingBackend.Models
 {
-    public class Appointmet
+    public class Appointment
     {
         public int Id { get; set; }
 

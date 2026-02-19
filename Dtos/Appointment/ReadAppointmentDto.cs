@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.DTOs.Appointmet
+namespace PetSavingBackend.DTOs.Appointment
 {
-    public class ReadAppointmetDTO
+    public class ReadAppointmentDTO
     {
         public int Id { get; set; }
 

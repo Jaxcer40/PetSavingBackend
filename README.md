@@ -10,7 +10,9 @@ Proyecto de .net webapi para Pet Saving.
    dotnet ef migrations add Init
    ```
 
-2. Crear database.db
+2. Crear carpeta db en la carpeta Data
+
+3. Crear database.db
 
    ```bash
    dotnet ef database update

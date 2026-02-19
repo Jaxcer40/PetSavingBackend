@@ -36,6 +36,6 @@ namespace PetSavingBackend.Models
         public ICollection<Pet> Pets { get; set; } = new List<Pet>();
 
         //relacion uno a muchos con Appointmet
-        public ICollection<Appointmet> Appointmets { get; set; } = new List<Appointmet>();
+        public ICollection<Appointment> Appointments { get; set; } = new List<Appointment>();
     }
 }

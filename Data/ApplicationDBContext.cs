@@ -16,7 +16,7 @@ namespace PetSavingBackend.Data
         }
 
         public DbSet<Admission> Admissions{set; get;} 
-        public DbSet<Appointmet> Appointmets{set; get;} 
+        public DbSet<Appointment> Appointments{set; get;} 
         public DbSet<Inventory> Inventories{set; get;} 
         public DbSet<Pet> Pets{set; get;} 
         public DbSet<Status> Statuses{set; get;} 
@@ -64,21 +64,21 @@ namespace PetSavingBackend.Data
                 .HasForeignKey(s => s.AdmissionId);
 
             // Appointment <-> Pet
-            builder.Entity<Appointmet>()
+            builder.Entity<Appointment>()
                 .HasOne(a => a.Pet)
-                .WithMany(p => p.Appointmets)
+                .WithMany(p => p.Appointments)
                 .HasForeignKey(a => a.PetId);
 
             // Appointment <-> Client
-            builder.Entity<Appointmet>()
+            builder.Entity<Appointment>()
                 .HasOne(a => a.Client)
-                .WithMany(c => c.Appointmets)
+                .WithMany(c => c.Appointments)
                 .HasForeignKey(a => a.ClientId);
 
             // Appointment <-> Vet
-            builder.Entity<Appointmet>()
+            builder.Entity<Appointment>()
                 .HasOne(a => a.Vet)
-                .WithMany(v => v.Appointmets)
+                .WithMany(v => v.Appointments)
                 .HasForeignKey(a => a.VetId);
 
             // Pet <-> Client

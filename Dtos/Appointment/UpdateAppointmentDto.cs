@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PetSavingBackend.DTOs.Appointmet
+namespace PetSavingBackend.DTOs.Appointment
 {
-    public class UpdateAppointmetDTO
+    public class UpdateAppointmentDTO
     {
         //llave foranea hacia Pet
         public int? PetId {get; set;}
