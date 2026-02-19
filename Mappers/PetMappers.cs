@@ -26,6 +26,7 @@ namespace PetSavingBackend.Mappers
 
                 Client= new ClientSummaryDTO
                 {
+                    Id=petModel.Client.Id,
                     FirstName=petModel.Client.FirstName,
                     LastName=petModel.Client.LastName
                 }

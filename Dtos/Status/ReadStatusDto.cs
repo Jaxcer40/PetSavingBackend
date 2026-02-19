@@ -19,6 +19,7 @@ namespace PetSavingBackend.DTOs.Status
 
     public class AdmissionSummaryDTO
     {
+        public int Id {get; set;}
         public DateTime AdmissionDate { get; set; }
         public string AdmissionReason { get; set; } = string.Empty;
         

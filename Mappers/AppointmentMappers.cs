@@ -24,12 +24,14 @@ namespace PetSavingBackend.Mappers
                 
                 Pet = new PetSummaryDTO
                 {
+                    Id= appointmentModel.Pet.Id,
                     Name = appointmentModel.Pet.Name,
                     Species = appointmentModel.Pet.Species
                 },
 
                 Vet = new VetSummaryDTO
                 {
+                    Id =appointmentModel.Vet.Id,
                     FirstName= appointmentModel.Vet.FirstName,
                     LastName= appointmentModel.Vet.LastName,
                     Specialization=appointmentModel.Vet.Specialization
@@ -37,6 +39,7 @@ namespace PetSavingBackend.Mappers
 
                 Client = new ClientSummaryDTO
                 {
+                    Id=appointmentModel.Client.Id,
                     FirstName= appointmentModel.Client.FirstName,
                     LastName= appointmentModel.Client.LastName,
                 }

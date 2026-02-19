@@ -22,12 +22,14 @@ namespace PetSavingBackend.Mappers
 
                 Pet = new PetSummaryDTO
                 {
+                    Id= admissionModel.Pet.Id,
                     Name = admissionModel.Pet.Name,
                     Species = admissionModel.Pet.Species
                 },
 
                 Vet= new VetSummaryDTO
-                {
+                {   
+                    Id=admissionModel.Vet.Id,
                     FirstName=admissionModel.Vet.FirstName,
                     LastName=admissionModel.Vet.LastName,
                     Specialization=admissionModel.Vet.Specialization

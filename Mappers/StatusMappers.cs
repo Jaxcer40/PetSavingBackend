@@ -18,6 +18,7 @@ namespace PetSavingBackend.Mappers
                 Notes = statusModel.Notes,
                 Admission = new AdmissionSummaryDTO
                 {
+                    Id=statusModel.Admission.Id,
                     AdmissionDate = statusModel.Admission.AdmissionDate,
                     AdmissionReason = statusModel.Admission.AdmissionReason
                 }

@@ -28,6 +28,7 @@ namespace PetSavingBackend.DTOs.Admission
 
     public class PetSummaryDTO
     {
+        public int Id {get; set;}
         public string Name {get; set;} = string.Empty;
         public string Species { get; set; } = string.Empty;
 
@@ -35,6 +36,7 @@ namespace PetSavingBackend.DTOs.Admission
 
     public class VetSummaryDTO
     {
+        public int Id {get; set;}
         public string FirstName { get; set; } = string.Empty;
         public string LastName {get;set;}= string.Empty;
         public string Specialization { get; set; } = string.Empty;

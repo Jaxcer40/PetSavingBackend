@@ -31,8 +31,8 @@ namespace PetSavingBackend.DTOs.Pet
 
     public class ClientSummaryDTO
     {
+        public int Id {get; set;}
         public string FirstName {set; get;}= string.Empty;
-
         public string LastName {set; get;}= string.Empty;
     }
 }
