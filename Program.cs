@@ -23,6 +23,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlite
 //Dependency Injection 
 builder.Services.AddScoped<IPetRepository, PetRepository>();
 builder.Services.AddScoped<IClientRepository, ClientRepository>();
+builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 
 // Este es el punto donde se configura la canalización de solicitudes HTTP.
 var app = builder.Build();

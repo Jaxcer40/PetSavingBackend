@@ -70,9 +70,8 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> Create([FromBody] CreatePetDTO petDTO)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+            
             // Validar que el DTO no sea nulo
             if (petDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
@@ -87,9 +86,8 @@ namespace PetSavingBackend.Controllers
         public async Task<IActionResult> Patch(int id, [FromBody] UpdatePetDTO updateDTO)
         {
             if (!ModelState.IsValid)
-            {
                 return BadRequest(ModelState);
-            }
+            
             if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 

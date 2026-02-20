@@ -8,6 +8,8 @@ using PetSavingBackend.Mappers;
 using PetSavingBackend.DTOs.Status;
 using PetSavingBackend.Models;
 using Microsoft.EntityFrameworkCore;
+using PetSavingBackend.Interfaces;
+using PetSavingBackend.Helper;
 
 namespace PetSavingBackend.Controllers
 {
@@ -15,27 +17,44 @@ namespace PetSavingBackend.Controllers
     [ApiController]
     public class StatusController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public StatusController(ApplicationDBContext context)
+        private readonly IStatusRepository _statusRepo;
+        public StatusController(IStatusRepository statusRepo)
         {
-            _context=context;
+            _statusRepo=statusRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var statuses=await _context.Statuses
-            .Select(s=>s.ToReadStatusDTO()).ToListAsync();
+            var statuses=await _statusRepo.GetAllAsync();
 
-            return Ok(statuses);
+            return Ok(statuses.Select(a=>a.ToReadStatusDTO()));
         }
 
-        [HttpGet ("{id}")]
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetSatusPaged(
+            int pageNumber=1,
+            int pageSize=10)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
+            var response = await _statusRepo.GetPagedAsync(pageNumber, pageSize);
+
+            var dtoResponse = new PagedResponse<ReadStatusDTO>(
+                response.Data.Select(a => a.ToReadStatusDTO()).ToList(),
+                response.TotalRecords,
+                response.PageNumber,
+                response.PageSize
+            );
+
+            return Ok(dtoResponse);
+        }
+
+        [HttpGet ("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var status = await _context.Statuses.Include(a=>a.Admission)
-            .FirstOrDefaultAsync(a=>a.Id==id);
-            
+            var status = await _statusRepo.GetByIdAsync(id);            
             if(status== null)
             {
                 return NotFound();
@@ -47,67 +66,48 @@ namespace PetSavingBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStatusDTO statusDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             // Validar que el DTO no sea nulo
             if (statusDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            // Validar que el AdmissionId exista
-            var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == statusDTO.AdmissionId);
-            if (!admissionExists)
-                return BadRequest("El AdmissionId no existe.");
-
             var statusModel = statusDTO.ToStatusFromCreateDTO();
-            await _context.Statuses.AddAsync(statusModel);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id=statusModel.Id}, statusModel.ToReadStatusDTO());
+            var statusWithAdmission = await _statusRepo.CreateAsync(statusModel);
+
+            return CreatedAtAction(nameof(GetById), new {id=statusWithAdmission.Id}, statusWithAdmission.ToReadStatusDTO());
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> Patch(int id,  [FromBody] UpdateStatusDTO updateDTO)
         {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
             if (updateDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id == id);
+            var statusModel= await _statusRepo.PatchAsync(id, updateDTO);
 
             if (statusModel == null)
             {
                 return NotFound();
             }
-
-            if(updateDTO.AdmissionId.HasValue)
-            {
-                var admissionExists = await _context.Admissions.AnyAsync(p => p.Id == updateDTO.AdmissionId.Value);
-                if (!admissionExists)
-                    return BadRequest("El AdmissionId no existe.");
-                statusModel.AdmissionId= updateDTO.AdmissionId.Value;
-            }
-
-            if(!string.IsNullOrWhiteSpace(updateDTO.CurrentStatus))
-                statusModel.CurrentStatus=updateDTO.CurrentStatus;
-
-            if(!string.IsNullOrWhiteSpace(updateDTO.Notes))
-                statusModel.Notes=updateDTO.Notes;
-            
-            await _context.SaveChangesAsync();
 
             return Ok(statusModel.ToReadStatusDTO());
         }
 
         //Delete por id
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id==id);
+            var statusModel= await _statusRepo.DeleteAsync(id);
             if (statusModel == null)
             {
                 return NotFound();
             }
-
-            _context.Statuses.Remove(statusModel);
-
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
