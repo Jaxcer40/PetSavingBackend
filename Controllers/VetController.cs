@@ -27,7 +27,7 @@ namespace PetSavingBackend.Controllers
         {
             var vets= await _context.Vets
             .Select(s=>s.ToReadVetDTO()).ToListAsync();
-           
+        
             return Ok(vets);
         }        
 

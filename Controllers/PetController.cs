@@ -15,7 +15,6 @@ namespace PetSavingBackend.Controllers
     [Route("api/pet")]
     [ApiController]
 
-    //Get de Pet
     public class PetController : ControllerBase
     {
         private readonly IPetRepository _petRepo;
@@ -24,6 +23,7 @@ namespace PetSavingBackend.Controllers
             _petRepo=petRepo;
         }
 
+        //Get de Pet
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -47,7 +47,6 @@ namespace PetSavingBackend.Controllers
                 response.PageNumber,
                 response.PageSize
             );
-
 
             return Ok(dtoResponse);
         }
