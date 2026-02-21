@@ -10,9 +10,9 @@ namespace PetSavingBackend.Mappers
 {
     public static class InventoryMappers
     {
-        public static ReadInentoryDTO ToReadInventoryDTO(this Inventory inventoryModel)
+        public static ReadInventoryDTO ToReadInventoryDTO(this Inventory inventoryModel)
         {
-            return new ReadInentoryDTO
+            return new ReadInventoryDTO
             {
                 Id= inventoryModel.Id,
                 Name= inventoryModel.Name,

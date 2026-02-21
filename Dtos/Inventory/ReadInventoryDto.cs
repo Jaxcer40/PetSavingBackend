@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PetSavingBackend.DTOs.Inventory
 {
-    public class ReadInentoryDTO
+    public class ReadInventoryDTO
     {
         public int Id { get; set; }
         
