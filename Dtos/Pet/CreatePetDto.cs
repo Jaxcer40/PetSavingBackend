@@ -11,7 +11,7 @@ namespace PetSavingBackend.DTOs.Pet
     {
         //Llave foranea a Client
         [Required]
-       public int ClientId {get; set; }
+        public int ClientId {get; set; }
 
         [Required (ErrorMessage ="El nombre de la mascota es obligatorio")]
         [MaxLength(100, ErrorMessage ="El nombre de la mascota no puede superar los 100 caracteres") ]

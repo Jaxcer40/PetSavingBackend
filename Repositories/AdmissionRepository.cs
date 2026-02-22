@@ -21,6 +21,14 @@ namespace PetSavingBackend.Repositories
 
         public async Task<Admission> CreateAsync(Admission admissionModel)
         {
+            var petExists = await _context.Pets.AnyAsync(p => p.Id == admissionModel.PetId);
+                if (!petExists)
+            throw new ArgumentException("El PetId no existe.");
+
+            var vetExists = await _context.Vets.AnyAsync(v => v.Id == admissionModel.VetId);
+                if (!vetExists)
+            throw new ArgumentException("El VetId no existe.");
+
             await _context.Admissions.AddAsync(admissionModel);
             await _context.SaveChangesAsync();
             

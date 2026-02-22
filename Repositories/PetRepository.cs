@@ -23,6 +23,10 @@ namespace PetSavingBackend.Repositories
 
         public async Task<Pet> CreateAsync(Pet petModel)
         {
+            var clientExists = await _context.Clients.AnyAsync(c => c.Id == petModel.ClientId);
+                if (!clientExists)
+            throw new ArgumentException("El ClientId no existe.");
+
             await _context.Pets.AddAsync(petModel);
             await _context.SaveChangesAsync();
 
