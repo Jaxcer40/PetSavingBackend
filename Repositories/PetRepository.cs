@@ -49,7 +49,9 @@ namespace PetSavingBackend.Repositories
 
         public async Task<List<Pet>> GetAllAsync()
         {
-            return await _context.Pets.Include(p => p.Client).ToListAsync();
+            return await _context.Pets
+                .Include(p => p.Client)
+                .ToListAsync();
         }
 
         public async Task<Pet?> GetByIdAsync(int id)

@@ -7,6 +7,8 @@ using PetSavingBackend.Data;
 using PetSavingBackend.Mappers;
 using PetSavingBackend.DTOs.Appointment;
 using Microsoft.EntityFrameworkCore;
+using PetSavingBackend.Interfaces;
+using PetSavingBackend.Helper;
 
 namespace PetSavingBackend.Controllers
 {
@@ -14,28 +16,43 @@ namespace PetSavingBackend.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly ApplicationDBContext _context;
-        public AppointmentController(ApplicationDBContext context)
+        private readonly IAppointmentRepository _appointmentRepo;
+        public AppointmentController(IAppointmentRepository appointmentRepo)
         {
-            _context = context;
+            _appointmentRepo=appointmentRepo;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var appointments= await _context.Appointments
-            .Select(s=> s.ToReadAppointmentDTO()).ToListAsync();
-           
-            return Ok(appointments);
+            var appointments= await _appointmentRepo.GetAllAsync();
+            return Ok(appointments.Select(c=>c.ToReadAppointmentDTO()));
         }
 
-        [HttpGet ("{id}")]
+        [HttpGet("paged")]
+        public async Task<IActionResult> GetPetsPaged(
+            int pageNumber = 1,
+            int pageSize = 10)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            var response = await _appointmentRepo.GetPagedAsync(pageNumber, pageSize);
+
+            var dtoResponse = new PagedResponse<ReadAppointmentDTO>(
+                response.Data.Select(p => p.ToReadAppointmentDTO()).ToList(),
+                response.TotalRecords,
+                response.PageNumber,
+                response.PageSize
+            );
+
+            return Ok(dtoResponse);
+        }
+
+        [HttpGet ("{id:int}")]
         public async Task<IActionResult> GetById([FromRoute] int id)
         {
-            var appointment = await _context.Appointments
-            .Include(a=>a.Pet).Include(a=>a.Client)
-            .Include(a=>a.Vet).FirstOrDefaultAsync(a=>a.Id==id);
-            
+            var appointment = await _appointmentRepo.GetByIdAsync(id);
             if(appointment== null)
             {
                 return NotFound();
@@ -47,101 +64,48 @@ namespace PetSavingBackend.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateAppointmentDTO appointmentDTO)
         {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+            
             // Validar que el DTO no sea nulo
             if (appointmentDTO == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
 
-            // Validar que el PetId exista
-            var petExists = await _context.Pets.AnyAsync(p => p.Id == appointmentDTO.PetId);
-            if (!petExists)
-                return BadRequest("El PetId no existe.");
-
-            // Validar que el ClientId exista
-            var clientExists = await _context.Clients.AnyAsync(c => c.Id == appointmentDTO.ClientId);
-            if (!clientExists)
-                return BadRequest("El ClientId no existe.");
-
-            // Validar que el VetId exista (si lo envías en el DTO)
-            var vetExists = await _context.Vets.AnyAsync(v => v.Id == appointmentDTO.VetId);
-            if (!vetExists)
-                return BadRequest("El VetId no existe.");
-
             var appointmentModel= appointmentDTO.ToAppointmentFromCreateDTO();
-            await _context.Appointments.AddAsync(appointmentModel);
-            await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(GetById), new {id= appointmentModel.Id}, appointmentModel.ToReadAppointmentDTO());
+            var appointmentWithPetAndClientAndVet= await _appointmentRepo.CreateAsync(appointmentModel);
+
+            return CreatedAtAction(nameof(GetById), new {id= appointmentWithPetAndClientAndVet.Id}, appointmentWithPetAndClientAndVet.ToReadAppointmentDTO());
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{id:int}")]
         public async Task<IActionResult> Patch(int id, [FromBody] UpdateAppointmentDTO updateDTO)
         {
-            var appointmetModel= await _context.Appointments.FirstOrDefaultAsync(x=>x.Id==id);
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            if (appointmetModel == null)
+            if(updateDTO ==null)
+                return BadRequest("El cuerpo de la solicitud esta vacio");
+
+            var appointmentModel=await _appointmentRepo.PatchAsync(id, updateDTO);
+
+            if (appointmentModel == null)
             {
                 return NotFound();
             }
 
-            if(updateDTO.PetId.HasValue)
-            {
-                var petExists = await _context.Pets.AnyAsync(p => p.Id == updateDTO.PetId.Value);
-                if (!petExists)
-                return BadRequest("El PetId no existe.");
-                appointmetModel.PetId=updateDTO.PetId.Value;
-            }
-
-            if(updateDTO.ClientId.HasValue)
-            {
-                var clientExists = await _context.Clients.AnyAsync(c => c.Id == updateDTO.ClientId.Value);
-                if (!clientExists)
-                    return BadRequest("El ClientId no existe.");
-
-                appointmetModel.ClientId=updateDTO.ClientId.Value;
-            }
-
-            if(updateDTO.VetId.HasValue)
-            {
-                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDTO.VetId.Value);
-                if (!vetExists)
-                    return BadRequest("El VetId no existe.");
-                appointmetModel.VetId=updateDTO.VetId.Value;
-            }
-
-            if(updateDTO.AppointmentDate.HasValue)
-                appointmetModel.AppointmentDate=updateDTO.AppointmentDate.Value;
-            
-            if(updateDTO.Diagnosis!=null)
-                appointmetModel.Diagnosis=updateDTO.Diagnosis;
-            
-            if(updateDTO.Treatment!=null)
-                appointmetModel.Treatment=updateDTO.Treatment;
-            
-            if(updateDTO.Notes!=null)
-                appointmetModel.Notes=updateDTO.Notes;
-            
-            if(updateDTO.FollowUpDate.HasValue)
-                appointmetModel.FollowUpDate=updateDTO.FollowUpDate.Value;
-
-            await _context.SaveChangesAsync();
-
-            return Ok(appointmetModel.ToReadAppointmentDTO());
-
+            return Ok(appointmentModel.ToReadAppointmentDTO());
         }
 
         //Delete por id
         [HttpDelete]
-        [Route("{id}")]
+        [Route("{id:int}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
-            var appointmetModel= await _context.Appointments.FirstOrDefaultAsync(x=>x.Id==id);
+            var appointmetModel= await _appointmentRepo.DeleteAsync(id);
             if (appointmetModel == null)
             {
                 return NotFound();
             }
-
-            _context.Appointments.Remove(appointmetModel);
-
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }
