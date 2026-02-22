@@ -97,7 +97,7 @@ namespace PetSavingBackend.Repositories
                 .Include(s=>s.Admission)
                 .FirstOrDefaultAsync(s=>s.Id ==existingStatus.Id);
             
-            return existingStatus;
+            return statusWithAdmission;
         }
     }
 }

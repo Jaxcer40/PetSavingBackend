@@ -93,9 +93,7 @@ namespace PetSavingBackend.Repositories
                 existingInventory.SupplerName = updateDTO.SupplerName;
 
             await _context.SaveChangesAsync();
-            var inventoryWithDetails = await _context.Inventories
-                .FirstOrDefaultAsync(i => i.Id == existingInventory.Id);
-            
+
             return existingInventory;
         }
     }

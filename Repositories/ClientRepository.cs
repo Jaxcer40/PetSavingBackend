@@ -95,8 +95,8 @@ namespace PetSavingBackend.Repositories
                 existingClient.EmergencyContactPhone = updateDTO.EmergencyContactPhone;
 
             await _context.SaveChangesAsync();
+            
             return existingClient;
-
         }
     }
 }

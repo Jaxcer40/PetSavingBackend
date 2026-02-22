@@ -113,7 +113,6 @@ namespace PetSavingBackend.Controllers
             _context.Vets.Remove(vetModel);
 
             await _context.SaveChangesAsync();
-
             return NoContent();
         }
     }

@@ -137,7 +137,7 @@ namespace PetSavingBackend.Repositories
                 .Include(a=>a.Vet)
                 .FirstOrDefaultAsync(a=>a.Id == existingAppointment.Id);
 
-            return existingAppointment;
+            return appointmentWhithPetAndClientAndVet;
         }
     }
 }

@@ -104,7 +104,6 @@ namespace PetSavingBackend.Repositories
             if (updateDTO.BirthDate.HasValue && updateDTO.BirthDate.Value > DateTime.UtcNow)
                 throw new ArgumentException("La fecha de nacimiento no puede ser futura");
 
-
             if(updateDTO.BirthDate.HasValue)
                 existingPet.BirthDate=updateDTO.BirthDate.Value;
             
@@ -129,7 +128,7 @@ namespace PetSavingBackend.Repositories
                 .Include(p => p.Client)
                 .FirstOrDefaultAsync(p => p.Id == existingPet.Id);
     
-            return existingPet;
+            return petWithClient;
         }
     }
 }
