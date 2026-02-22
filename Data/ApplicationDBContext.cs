@@ -45,6 +45,24 @@ namespace PetSavingBackend.Data
             // Agrega los roles al modelo.
             builder.Entity<Inventory>().HasData(products);
 
+            List<Client> clientePorDefecto = new List<Client>
+            {
+                new Client
+                {
+                    Id = 1,
+                    FirstName = "Sin Cliente",
+                    LastName = string.Empty,
+                    Email = string.Empty,
+                    PhoneNumber = string.Empty,
+                    Address = string.Empty,
+                    BirthDate = DateTime.Parse("12/11/2025 2:36 PM"),
+                    RegistrationDate = DateTime.Parse("12/11/2025 2:36 PM"),
+                    EmergencyContactName = string.Empty,
+                    EmergencyContactPhone = string.Empty
+                }
+            };
+            builder.Entity<Client>().HasData(clientePorDefecto);
+
             // Admission <-> Pet
             builder.Entity<Admission>()
                 .HasOne(a => a.Pet)

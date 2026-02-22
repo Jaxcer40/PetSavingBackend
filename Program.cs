@@ -28,6 +28,17 @@ builder.Services.AddScoped<IAdmissionRepository, AdmissionRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 
+// CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 // Este es el punto donde se configura la canalización de solicitudes HTTP.
 var app = builder.Build();
 
@@ -37,6 +48,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors("AllowAll");
 
 // Show SwaggerUI shorcut in console
 app.Lifetime.ApplicationStarted.Register(() =>
