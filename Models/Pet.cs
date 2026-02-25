@@ -24,11 +24,11 @@ namespace PetSavingBackend.Models
 
         public string Gender { get; set; } = string.Empty;
 
-        public DateTime BirthDate { get; set;  }
+        public DateTime? BirthDate { get; set;  }
 
         public decimal Weight { get; set; }
 
-        public DateTime AdoptedDate { get; set; }
+        public DateTime? AdoptedDate { get; set; }
 
         public int Rating { get; set; }
 

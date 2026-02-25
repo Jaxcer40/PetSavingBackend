@@ -21,6 +21,7 @@ namespace PetSavingBackend.Mappers
                 PhoneNumber=clientModel.PhoneNumber,
                 Address=clientModel.Address,
                 BirthDate=clientModel.BirthDate,
+                RegistrationDate=clientModel.RegistrationDate,
                 EmergencyContactName=clientModel.EmergencyContactName,
                 EmergencyContactPhone=clientModel.EmergencyContactPhone,
             };
@@ -28,6 +29,11 @@ namespace PetSavingBackend.Mappers
 
         public static Client ToClientFromCreateDTO(this CreateClientDTO clientDTO)
         {
+            if (clientDTO.Email == null)
+            {
+                clientDTO.Email = string.Empty;
+            }
+
             return new Client
             {
                 FirstName=clientDTO.FirstName,

@@ -19,7 +19,7 @@ namespace PetSavingBackend.DTOs.Client
 
         public string Address {set; get;}=string.Empty;
 
-        public DateTime BirthDate {set; get; }
+        public DateTime? BirthDate {set; get; }
 
         public DateTime RegistrationDate {set; get;}
 

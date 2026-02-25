@@ -22,7 +22,7 @@ namespace PetSavingBackend.Models
 
         public string Address { get; set; } = string.Empty;
 
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         //definir un valor por default para la fecha de registro
         public DateTime RegistrationDate { get; set; } = DateTime.Now;
