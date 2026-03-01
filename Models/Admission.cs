@@ -10,14 +10,14 @@ namespace PetSavingBackend.Models
 {
     public class Admission
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         // llave foranea hacia Pet  
-        public int PetId { get; set; }
+        public Guid PetId { get; set; }
         public Pet Pet { get; set; } = null!;  
 
         // llave foranea hacia Vet
-        public int VetId { get; set; }
+        public Guid VetId { get; set; }
         public Vet Vet { get; set; } = null!;
 
         public DateTime AdmissionDate { get; set; }

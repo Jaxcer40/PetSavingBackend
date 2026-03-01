@@ -9,13 +9,13 @@ namespace PetSavingBackend.DTOs.Appointment
     public class UpdateAppointmentDTO
     {
         //llave foranea hacia Pet
-        public int? PetId {get; set;}
+        public Guid? PetId {get; set;}
 
         //llave foranea hacia Client
-        public int? ClientId {get; set;}
+        public Guid? ClientId {get; set;}
         
         //llave foranea hacia Vet
-        public int? VetId {get; set;}
+        public Guid? VetId {get; set;}
 
         public DateTime? AppointmentDate { get; set; }
 

@@ -37,7 +37,7 @@ namespace PetSavingBackend.Repositories
             return petWithClient!;
         }
 
-        public async Task<Pet?> DeleteAsync(int id)
+        public async Task<Pet?> DeleteAsync(Guid id)
         {
             var petModel= await _context.Pets.FirstOrDefaultAsync(x=>x.Id==id);
 
@@ -58,7 +58,7 @@ namespace PetSavingBackend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Pet?> GetByIdAsync(int id)
+        public async Task<Pet?> GetByIdAsync(Guid id)
         {
             return await _context.Pets
                 .Include(p => p.Client)
@@ -79,7 +79,7 @@ namespace PetSavingBackend.Repositories
             return new PagedResponse<Pet>(pets, totalRecords, pageNumber, pageSize);
         }
 
-        public async Task<Pet?> PatchAsync(int id, UpdatePetDTO updateDTO)
+        public async Task<Pet?> PatchAsync(Guid id, UpdatePetDTO updateDTO)
         {
             var existingPet=await _context.Pets.FindAsync(id);
             if (existingPet==null) return null;

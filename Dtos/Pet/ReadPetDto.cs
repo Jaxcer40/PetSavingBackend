@@ -7,7 +7,7 @@ namespace PetSavingBackend.DTOs.Pet
 {
     public class ReadPetDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
 
         //Llave foranea hacia client
         public ClientSummaryDTO Client {get; set; }=null!;
@@ -31,7 +31,7 @@ namespace PetSavingBackend.DTOs.Pet
 
     public class ClientSummaryDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
         public string FirstName {set; get;}= string.Empty;
         public string LastName {set; get;}= string.Empty;
     }

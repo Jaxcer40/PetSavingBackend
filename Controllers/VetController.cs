@@ -58,8 +58,8 @@ namespace PetSavingBackend.Controllers
             return CreatedAtAction(nameof(GetById), new {id=vetModel.Id}, vetModel.ToReadVetDTO());
         }
 
-        [HttpPatch("{id}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateVetDTO updateVet)
+        [HttpPatch("{id:Guid}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] UpdateVetDTO updateVet)
         {
             if (updateVet == null)
                 return BadRequest("El cuerpo de la solicitud está vacío.");
@@ -101,8 +101,8 @@ namespace PetSavingBackend.Controllers
 
         //Delete por id
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var vetModel= await _context.Vets.FirstOrDefaultAsync(x=>x.Id==id);
             if (vetModel == null)

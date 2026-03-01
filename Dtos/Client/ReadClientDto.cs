@@ -7,7 +7,7 @@ namespace PetSavingBackend.DTOs.Client
 {
     public class ReadClientDTO
     {
-        public int Id {set; get;}
+        public Guid Id {set; get;}
 
         public string FirstName {set; get;}=string.Empty;
 

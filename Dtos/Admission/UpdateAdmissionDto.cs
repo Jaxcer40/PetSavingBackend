@@ -9,10 +9,10 @@ namespace PetSavingBackend.DTOs.Admission
     public class UpdateAdmissionDTO
     {
         // llave foranea hacia Pet     
-        public int? PetId { get; set; }
+        public Guid? PetId { get; set; }
 
         // llave foranea hacia Vet
-        public int? VetId { get; set; }
+        public Guid? VetId { get; set; }
 
         public DateTime? AdmissionDate { get; set; }
 

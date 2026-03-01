@@ -30,7 +30,7 @@ namespace PetSavingBackend.Repositories
             return inventoryWithDetails!;
         }
 
-        public async Task<Inventory?> DeleteAsync(int id)
+        public async Task<Inventory?> DeleteAsync(Guid id)
         {
             var inventoryModel = await _context.Inventories.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -49,7 +49,7 @@ namespace PetSavingBackend.Repositories
             return await _context.Inventories.ToListAsync();
         }
 
-        public async Task<Inventory?> GetByIdAsync(int id)
+        public async Task<Inventory?> GetByIdAsync(Guid id)
         {
             return await _context.Inventories
                 .FirstOrDefaultAsync(i => i.Id == id);
@@ -69,7 +69,7 @@ namespace PetSavingBackend.Repositories
             return new PagedResponse<Inventory>(inventories, totalRecords, pageNumber, pageSize);
         }
 
-        public async Task<Inventory?> PatchAsync(int id, UpdateInventoryDTO updateDTO)
+        public async Task<Inventory?> PatchAsync(Guid id, UpdateInventoryDTO updateDTO)
         {
             var existingInventory = await _context.Inventories.FindAsync(id);
             if (existingInventory == null) return null;

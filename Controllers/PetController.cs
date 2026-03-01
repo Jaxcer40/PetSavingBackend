@@ -52,8 +52,8 @@ namespace PetSavingBackend.Controllers
         }
 
         //Get por Id
-        [HttpGet ("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet ("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var pet = await _petRepo.GetByIdAsync(id);
             if(pet== null)
@@ -81,8 +81,8 @@ namespace PetSavingBackend.Controllers
             return CreatedAtAction(nameof(GetById),new {id = petWithClient.Id}, petWithClient.ToReadPetDTO());
         }
 
-        [HttpPatch("{id:int}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdatePetDTO updateDTO)
+        [HttpPatch("{id:Guid}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] UpdatePetDTO updateDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -102,8 +102,8 @@ namespace PetSavingBackend.Controllers
 
         //Delete por id
         [HttpDelete]
-        [Route("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var petModel=  await _petRepo.DeleteAsync(id);
             if (petModel == null)

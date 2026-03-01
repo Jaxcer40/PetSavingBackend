@@ -12,9 +12,9 @@ namespace PetSavingBackend.Interfaces
     {
         Task<List<Inventory>> GetAllAsync();
         Task<PagedResponse<Inventory>> GetPagedAsync(int pageNumber, int pageSize);
-        Task<Inventory?> GetByIdAsync(int id);
+        Task<Inventory?> GetByIdAsync(Guid id);
         Task<Inventory> CreateAsync(Inventory inventoryModel);
-        Task<Inventory?> PatchAsync(int id, UpdateInventoryDTO updateDTO);
-        Task<Inventory?> DeleteAsync(int id);
+        Task<Inventory?> PatchAsync(Guid id, UpdateInventoryDTO updateDTO);
+        Task<Inventory?> DeleteAsync(Guid id);
     }
 }

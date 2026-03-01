@@ -34,7 +34,7 @@ namespace PetSavingBackend.Data
                 // Role for Administrator
                 new Inventory
                 {
-                    Id = 1,
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                     Name = "Waiter",
                     Description = "WAITER",
                     UnitValue = 1.75m,
@@ -49,7 +49,7 @@ namespace PetSavingBackend.Data
             {
                 new Client
                 {
-                    Id = 1,
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
                     FirstName = "Sin Cliente",
                     LastName = string.Empty,
                     Email = string.Empty,

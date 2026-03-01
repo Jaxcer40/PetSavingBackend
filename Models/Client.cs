@@ -10,7 +10,7 @@ namespace PetSavingBackend.Models
 {
     public class Client
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
         
         public string FirstName { get; set; } = string.Empty; //string.empty es usado para evitar valores nulos
 

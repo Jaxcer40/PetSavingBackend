@@ -7,7 +7,7 @@ namespace PetSavingBackend.DTOs.Status
 {
     public class ReadStatusDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         // llave foranea hacia Admission
         public AdmissionSummaryDTO Admission {set; get;}=null!;
@@ -19,7 +19,7 @@ namespace PetSavingBackend.DTOs.Status
 
     public class AdmissionSummaryDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
         public DateTime AdmissionDate { get; set; }
         public string AdmissionReason { get; set; } = string.Empty;
         

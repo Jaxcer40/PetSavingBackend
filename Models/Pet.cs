@@ -10,10 +10,10 @@ namespace PetSavingBackend.Models
 {
     public class Pet
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         // llave foranea hacia Client
-        public int ClientId { get; set; }
+        public Guid ClientId { get; set; }
         public Client Client { get; set; } = null!;
 
         public string Name { get; set; } = string.Empty;

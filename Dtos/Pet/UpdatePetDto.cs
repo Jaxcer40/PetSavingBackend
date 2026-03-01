@@ -10,7 +10,7 @@ namespace PetSavingBackend.DTOs.Pet
     public class UpdatePetDTO
     {
         //Llave foranea a Client
-        public int? ClientId {get; set; }
+        public Guid? ClientId {get; set; }
 
         [MaxLength(100, ErrorMessage ="El nombre de la mascota no puede superar los 100 caracteres") ]
         public string? Name { get; set; } = string.Empty;

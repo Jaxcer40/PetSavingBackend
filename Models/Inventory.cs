@@ -10,7 +10,7 @@ namespace PetSavingBackend.Models
 {
     public class Inventory
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         public string Name { get; set; } = string.Empty;
 

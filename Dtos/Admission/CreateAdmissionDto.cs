@@ -10,11 +10,11 @@ namespace PetSavingBackend.DTOs.Admission
     {
         // llave foranea hacia Pet
         [Required]
-        public int PetId { get; set; }
+        public Guid PetId { get; set; }
 
         // llave foranea hacia Vet
         [Required]
-        public int VetId { get; set; }
+        public Guid VetId { get; set; }
 
         [Required (ErrorMessage ="La fecha de ingreso es obligatorio")]
         public DateTime AdmissionDate { get; set; }

@@ -13,9 +13,9 @@ namespace PetSavingBackend.Interfaces
     {
         Task<List<Appointment>> GetAllAsync();
         Task<PagedResponse<Appointment>> GetPagedAsync(int pageNumber, int pageSize);
-        Task<Appointment?> GetByIdAsync(int id);
+        Task<Appointment?> GetByIdAsync(Guid id);
         Task<Appointment> CreateAsync(Appointment appointmentModel);
-        Task<Appointment?> PatchAsync(int id, UpdateAppointmentDTO updateDTO);
-        Task<Appointment?> DeleteAsync(int id);
+        Task<Appointment?> PatchAsync(Guid id, UpdateAppointmentDTO updateDTO);
+        Task<Appointment?> DeleteAsync(Guid id);
     }
 }

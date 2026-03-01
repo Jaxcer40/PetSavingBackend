@@ -7,7 +7,7 @@ namespace PetSavingBackend.DTOs.Appointment
 {
     public class ReadAppointmentDTO
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         //llave foranea hacia Pet
         public PetSummaryDTO Pet {get; set;}=null!;
@@ -31,14 +31,14 @@ namespace PetSavingBackend.DTOs.Appointment
 
     public class PetSummaryDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
         public string Name {get; set;} = string.Empty;
         public string Species { get; set; } = string.Empty;
     }
 
     public class ClientSummaryDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
         public string FirstName {set; get;}= string.Empty;
 
         public string LastName {set; get;}= string.Empty;
@@ -46,7 +46,7 @@ namespace PetSavingBackend.DTOs.Appointment
 
     public class VetSummaryDTO
     {
-        public int Id {get; set;}
+        public Guid Id {get; set;}
         public string FirstName {set; get;}= string.Empty;
 
         public string LastName {set; get;}= string.Empty;

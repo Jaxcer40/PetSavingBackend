@@ -13,9 +13,9 @@ namespace PetSavingBackend.Interfaces
     {
         Task<List<Pet>> GetAllAsync();
         Task<PagedResponse<Pet>> GetPagedAsync(int pageNumber, int pageSize);
-        Task<Pet?> GetByIdAsync(int id);
+        Task<Pet?> GetByIdAsync(Guid id);
         Task<Pet> CreateAsync(Pet petModel);
-        Task<Pet?> PatchAsync(int id, UpdatePetDTO updateDTO);
-        Task<Pet?> DeleteAsync(int id);
+        Task<Pet?> PatchAsync(Guid id, UpdatePetDTO updateDTO);
+        Task<Pet?> DeleteAsync(Guid id);
     }
 }

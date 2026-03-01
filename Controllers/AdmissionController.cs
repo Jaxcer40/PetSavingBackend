@@ -51,8 +51,8 @@ namespace PetSavingBackend.Controllers
             return Ok(dtoResponse);
         }        
 
-        [HttpGet ("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet ("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var admission = await _admissionRepo.GetByIdAsync(id);
             if(admission== null)
@@ -80,8 +80,8 @@ namespace PetSavingBackend.Controllers
             return CreatedAtAction(nameof(GetById), new { id = admissionWithPetAndVet.Id }, admissionWithPetAndVet.ToReadAdmissionDTO());
         }
 
-        [HttpPatch("{id:int}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateAdmissionDTO updateDTO)
+        [HttpPatch("{id:Guid}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] UpdateAdmissionDTO updateDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -101,8 +101,8 @@ namespace PetSavingBackend.Controllers
 
         //Delete por id
         [HttpDelete]
-        [Route("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var admissionModel= await _admissionRepo.DeleteAsync(id);
             if (admissionModel == null)

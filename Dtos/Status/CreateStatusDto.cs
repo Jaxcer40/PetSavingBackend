@@ -10,7 +10,7 @@ namespace PetSavingBackend.DTOs.Status
     {
         // llave foranea hacia Admission
         [Required]
-        public int AdmissionId { get; set; }
+        public Guid AdmissionId { get; set; }
 
         [Required (ErrorMessage ="El estado actual es obligatorio")]
         [MaxLength(100, ErrorMessage ="El estado actual no puede superar los 100 caracteres")]

@@ -40,7 +40,7 @@ namespace PetSavingBackend.Repositories
             return admissionWithDetails!;
         }
 
-        public async Task<Admission?> DeleteAsync(int id)
+        public async Task<Admission?> DeleteAsync(Guid id)
         {
             var admissionModel = await _context.Admissions.FirstOrDefaultAsync(x => x.Id == id);
 
@@ -62,7 +62,7 @@ namespace PetSavingBackend.Repositories
                 .ToListAsync();
         }
 
-        public Task<Admission?> GetByIdAsync(int id)
+        public Task<Admission?> GetByIdAsync(Guid id)
         {
             return _context.Admissions
                 .Include(a => a.Pet)
@@ -88,7 +88,7 @@ namespace PetSavingBackend.Repositories
             return new PagedResponse<Admission>(admissions, totalRecords, pageNumber, pageSize);
         }
 
-        public async Task<Admission?> PatchAsync(int id, UpdateAdmissionDTO updateDTO)
+        public async Task<Admission?> PatchAsync(Guid id, UpdateAdmissionDTO updateDTO)
         {
             var existingAdmission=await _context.Admissions.FindAsync(id);
             if (existingAdmission == null) return null;

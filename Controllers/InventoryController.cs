@@ -51,8 +51,8 @@ namespace PetSavingBackend.Controllers
         }
 
         // Get por Id
-        [HttpGet ("{id:int}")]
-        public async Task<IActionResult> GetById([FromRoute] int id)
+        [HttpGet ("{id:Guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid id)
         {
             var inventory = await _inventoryRepo.GetByIdAsync(id);
             if(inventory== null)
@@ -82,8 +82,8 @@ namespace PetSavingBackend.Controllers
 
         //Update por id
         //Path god > Put zzz
-        [HttpPatch("{id:int}")]
-        public async Task<IActionResult> Patch(int id, [FromBody] UpdateInventoryDTO updateDTO)
+        [HttpPatch("{id:Guid}")]
+        public async Task<IActionResult> Patch(Guid id, [FromBody] UpdateInventoryDTO updateDTO)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -103,8 +103,8 @@ namespace PetSavingBackend.Controllers
 
         //Delete por id
         [HttpDelete]
-        [Route("{id:int}")]
-        public async Task<IActionResult> Delete([FromRoute] int id)
+        [Route("{id:Guid}")]
+        public async Task<IActionResult> Delete([FromRoute] Guid id)
         {
             var inventoryModel= await _inventoryRepo.DeleteAsync(id);
             if (inventoryModel == null)

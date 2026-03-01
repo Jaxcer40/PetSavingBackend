@@ -10,10 +10,10 @@ namespace PetSavingBackend.Models
 {
     public class Status
     {
-        public int Id { get; set; }
+        public Guid Id { get; set; }
 
         // llave foranea hacia Admission
-        public int AdmissionId { get; set; }
+        public Guid AdmissionId { get; set; }
         public Admission Admission { get; set; } = null!;
 
         public string CurrentStatus { get; set; } = string.Empty;

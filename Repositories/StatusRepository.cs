@@ -35,7 +35,7 @@ namespace PetSavingBackend.Repositories
             return statusWithAdmission!;
         }
 
-        public async Task<Status?> DeleteAsync(int id)
+        public async Task<Status?> DeleteAsync(Guid id)
         {
             var statusModel= await _context.Statuses.FirstOrDefaultAsync(x=>x.Id==id);
 
@@ -54,7 +54,7 @@ namespace PetSavingBackend.Repositories
             return await _context.Statuses.Include(s=>s.Admission).ToListAsync();
         }
 
-        public async Task<Status?> GetByIdAsync(int id)
+        public async Task<Status?> GetByIdAsync(Guid id)
         {
             return await _context.Statuses
                 .Include(s=>s.Admission)
@@ -75,7 +75,7 @@ namespace PetSavingBackend.Repositories
             return new PagedResponse<Status>(statuses, totalRecords, pageNumber, pageSize);
         }
 
-        public async Task<Status?> PatchAsync(int id, UpdateStatusDTO updateDTO)
+        public async Task<Status?> PatchAsync(Guid id, UpdateStatusDTO updateDTO)
         {
             var existingStatus = await _context.Statuses.FindAsync(id);
             if (existingStatus==null) return null;

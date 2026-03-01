@@ -9,7 +9,7 @@ namespace PetSavingBackend.DTOs.Status
     public class UpdateStatusDTO
     {
         // llave foranea hacia Admission
-        public int? AdmissionId { get; set; }
+        public Guid? AdmissionId { get; set; }
 
         [MaxLength(100, ErrorMessage ="El estado actual no puede superar los 100 caracteres")]
         public string? CurrentStatus { get; set; } = string.Empty;

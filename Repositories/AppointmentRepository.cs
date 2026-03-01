@@ -46,7 +46,7 @@ namespace PetSavingBackend.Repositories
             return appointmentWithPetAndClientAndVet!;
         }
 
-        public async Task<Appointment?> DeleteAsync(int id)
+        public async Task<Appointment?> DeleteAsync(Guid id)
         {
             var appointmentModel=await _context.Appointments.FirstOrDefaultAsync(x=>x.Id==id);
 
@@ -69,7 +69,7 @@ namespace PetSavingBackend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<Appointment?> GetByIdAsync(int id)
+        public async Task<Appointment?> GetByIdAsync(Guid id)
         {
             return await _context.Appointments
                 .Include(a=>a.Pet)
@@ -96,7 +96,7 @@ namespace PetSavingBackend.Repositories
             return new PagedResponse<Appointment>(appointments, totalRecords, pageNumber,pageSize);
         }
 
-        public async Task<Appointment?> PatchAsync(int id, UpdateAppointmentDTO updateDTO)
+        public async Task<Appointment?> PatchAsync(Guid id, UpdateAppointmentDTO updateDTO)
         {
             var existingAppointment=await _context.Appointments.FindAsync(id);
             if (existingAppointment==null) return null;
