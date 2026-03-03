@@ -3,6 +3,12 @@ using PetSavingBackend.Data;
 using Microsoft.EntityFrameworkCore;
 using PetSavingBackend.Interfaces;
 using PetSavingBackend.Repositories;
+using Microsoft.AspNetCore.Identity;
+using PetSavingBackend.Models;
+using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using PetSavingBackend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,14 +17,78 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// NewtonsoftJson para evitar problemas de referencia circular al serializar objetos con relaciones
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
 });
 
-// Databse conection
-builder.Services.AddDbContext<ApplicationDBContext>(Options => Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+// Show JWT in swagger
+builder.Services.AddSwaggerGen(option =>
+{
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "SafeMapQROOBackend", Version = "v1" });
+    option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        In = ParameterLocation.Header,
+        Description = "Please enter a valid token",
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        BearerFormat = "JWT",
+        Scheme = "Bearer"
+    });
+    option.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
+                }
+            },
+            new string[]{}
+        }
+    });
+});
 
+// Databse conection
+builder.Services.AddDbContext<ApplicationDBContext>(Options =>  Options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(Options =>
+{
+    Options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+áéíóúÁÉÍÓÚñÑ ";
+    Options.Password.RequireDigit = true;
+    Options.Password.RequireLowercase = true;
+    Options.Password.RequireUppercase = true;
+    Options.Password.RequireNonAlphanumeric = true;
+    Options.Password.RequiredLength = 12;
+
+})
+.AddEntityFrameworkStores<ApplicationDBContext>();
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme =
+    options.DefaultChallengeScheme =
+    options.DefaultForbidScheme =
+    options.DefaultScheme =
+    options.DefaultSignInScheme =
+    options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options =>
+{
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidIssuer = builder.Configuration["JWT:Issuer"],
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["JWT:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(
+        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SignInKey"]))
+        
+
+    };
+});
 
 //Dependency Injection 
 builder.Services.AddScoped<IPetRepository, PetRepository>();
@@ -27,6 +97,8 @@ builder.Services.AddScoped<IStatusRepository, StatusRepository>();
 builder.Services.AddScoped<IAdmissionRepository, AdmissionRepository>();
 builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 // CORS
 builder.Services.AddCors(options =>
@@ -62,6 +134,9 @@ app.Lifetime.ApplicationStarted.Register(() =>
 
 //Este middleware redirige las solicitudes HTTP a HTTPS.
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

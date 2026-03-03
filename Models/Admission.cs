@@ -18,7 +18,7 @@ namespace PetSavingBackend.Models
 
         // llave foranea hacia Vet
         public Guid VetId { get; set; }
-        public Vet Vet { get; set; } = null!;
+        public AppUser Vet { get; set; } = null!;
 
         public DateTime AdmissionDate { get; set; }
 

@@ -30,7 +30,7 @@ namespace PetSavingBackend.Repositories
                 if (!clientExists)
             throw new ArgumentException("El ClientId no existe.");
 
-            var vetExists = await _context.Vets.AnyAsync(v => v.Id == appointmentModel.VetId);
+            var vetExists = await _context.Users.AnyAsync(v => v.Id == appointmentModel.VetId);
                 if (!vetExists)
             throw new ArgumentException("El VetId no existe.");
 
@@ -121,7 +121,7 @@ namespace PetSavingBackend.Repositories
 
             if (updateDTO.VetId.HasValue)
             {
-                var vetExists=await _context.Vets.AnyAsync(v=>v.Id==updateDTO.VetId.Value);
+                var vetExists=await _context.Users.AnyAsync(v=>v.Id==updateDTO.VetId.Value);
                 if (!vetExists)
                     throw new ArgumentException("El VetId no existe");
 

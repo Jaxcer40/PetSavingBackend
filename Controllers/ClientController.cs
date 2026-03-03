@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using PetSavingBackend.Interfaces;
 using PetSavingBackend.Models;
 using PetSavingBackend.Helper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PetSavingBackend.Controllers
 {

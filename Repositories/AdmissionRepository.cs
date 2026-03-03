@@ -25,7 +25,7 @@ namespace PetSavingBackend.Repositories
                 if (!petExists)
             throw new ArgumentException("El PetId no existe.");
 
-            var vetExists = await _context.Vets.AnyAsync(v => v.Id == admissionModel.VetId);
+            var vetExists = await _context.Users.AnyAsync(v => v.Id == admissionModel.VetId);
                 if (!vetExists)
             throw new ArgumentException("El VetId no existe.");
 
@@ -104,7 +104,7 @@ namespace PetSavingBackend.Repositories
 
             if (updateDTO.VetId.HasValue)
             {
-                var vetExists = await _context.Vets.AnyAsync(v => v.Id == updateDTO.VetId.Value);
+                var vetExists = await _context.Users.AnyAsync(v => v.Id == updateDTO.VetId.Value);
                 if (!vetExists)
                     throw new ArgumentException("El VetId no existe.");
 

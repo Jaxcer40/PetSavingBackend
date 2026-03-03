@@ -4,10 +4,12 @@ using System.ComponentModel;
 using System.Linq;
 using PetSavingBackend.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace PetSavingBackend.Data
 {
-    public class ApplicationDBContext : DbContext
+    public class ApplicationDBContext : IdentityDbContext<AppUser, IdentityRole<Guid>, Guid>
     {
         public ApplicationDBContext(DbContextOptions dbContextOptions)
         : base(dbContextOptions)
@@ -21,7 +23,6 @@ namespace PetSavingBackend.Data
         public DbSet<Pet> Pets{set; get;} 
         public DbSet<Status> Statuses{set; get;} 
         public DbSet<Client> Clients{set;get;}
-        public DbSet<Vet> Vets{set;get;}
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -29,27 +30,24 @@ namespace PetSavingBackend.Data
             base.OnModelCreating(builder);
 
             // Seed initial roles into the database.
-            List<Inventory> products = new List<Inventory>
+            List<IdentityRole<Guid>> roles = new ()
             {
                 // Role for Administrator
-                new Inventory
+                new IdentityRole<Guid>
                 {
                     Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
-                    Name = "Waiter",
-                    Description = "WAITER",
-                    UnitValue = 1.75m,
-                    Stock = 5,
-                    SupplerName = "LMAO"
+                    Name = "Veterinario",
+                    NormalizedName = "VETERINARIO"
                 },
             };
-            // Agrega los roles al modelo.
-            builder.Entity<Inventory>().HasData(products);
+            builder.Entity<IdentityRole<Guid>>().HasData(roles);
 
+            // Agrega cliente por defecto para evitar problemas de clave foránea al crear mascotas sin cliente asignado
             List<Client> clientePorDefecto = new List<Client>
             {
                 new Client
                 {
-                    Id = Guid.Parse("00000000-0000-0000-0000-000000000001"),
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000002"),
                     FirstName = "Sin Cliente",
                     LastName = string.Empty,
                     Email = string.Empty,

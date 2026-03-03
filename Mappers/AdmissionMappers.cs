@@ -30,8 +30,7 @@ namespace PetSavingBackend.Mappers
                 Vet= new VetSummaryDTO
                 {   
                     Id=admissionModel.Vet.Id,
-                    FirstName=admissionModel.Vet.FirstName,
-                    LastName=admissionModel.Vet.LastName,
+                    FirstName=admissionModel.Vet.UserName,
                     Specialization=admissionModel.Vet.Specialization
                 }
           

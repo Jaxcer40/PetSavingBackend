@@ -47,9 +47,7 @@ namespace PetSavingBackend.DTOs.Appointment
     public class VetSummaryDTO
     {
         public Guid Id {get; set;}
-        public string FirstName {set; get;}= string.Empty;
-
-        public string LastName {set; get;}= string.Empty;
+        public string UserName {set; get;}= string.Empty;
 
         public string Specialization {set; get;}=string.Empty;
     }
