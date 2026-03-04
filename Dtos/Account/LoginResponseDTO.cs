@@ -7,6 +7,7 @@ namespace PetSavingBackend.Dtos.Account
 {
     public class LoginResponseDTO
     {
+        public Guid Id { get; set; }
         public string UserName { get; set; }
         public string Token { get; set; }
     }

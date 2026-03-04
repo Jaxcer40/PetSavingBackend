@@ -94,6 +94,7 @@ namespace PetSavingBackend.Repositories
                 {
                     return new RegisterAndLoginRequestDTO
                     {
+                        Id = registerNew.Id,
                         UserName = registerNew.UserName,
                         Token = await _tokenService.CreateTokenAsync(registerNew)
                     };

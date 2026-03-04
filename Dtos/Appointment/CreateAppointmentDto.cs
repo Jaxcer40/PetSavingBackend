@@ -19,8 +19,7 @@ namespace PetSavingBackend.DTOs.Appointment
         //llave foranea hacia Vet
         [Required]
         public Guid VetId {get; set;}
-
-        public DateTime AppointmentDate { get; set; }
+        
 
         [Required (ErrorMessage ="El diagnostico es obligatorio")]
         public string Diagnosis { get; set; } = string.Empty;

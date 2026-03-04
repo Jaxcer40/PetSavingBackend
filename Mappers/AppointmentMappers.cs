@@ -48,7 +48,6 @@ namespace PetSavingBackend.Mappers
         {
             return new Appointment
             {
-                AppointmentDate= appointmentDTO.AppointmentDate,
                 Diagnosis=appointmentDTO.Diagnosis,
                 Treatment=appointmentDTO.Treatment,
                 Notes= appointmentDTO.Notes,

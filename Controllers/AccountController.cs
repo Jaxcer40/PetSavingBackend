@@ -87,6 +87,7 @@ namespace PetSavingBackend.Controllers
                 }
                 return Ok(new LoginResponseDTO
                 {
+                    Id = user.Id,
                     UserName = user.UserName,
                     Token = await _tokenService.CreateTokenAsync(user)
                 });

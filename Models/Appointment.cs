@@ -24,7 +24,7 @@ namespace PetSavingBackend.Models
         public Guid VetId { get; set; }
         public AppUser Vet { get; set; } = null!;
 
-        public DateTime AppointmentDate { get; set; }
+        public DateTime AppointmentDate { get; set; } = DateTime.Now;
 
         public string Diagnosis { get; set; } = string.Empty;
 
