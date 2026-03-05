@@ -17,7 +17,6 @@ namespace PetSavingBackend.DTOs.Inventory
 
         public int Stock {set; get; }
 
-        //Aqui se oculta el proveedor
-
+        public required string SupplerName { get; set; }
     }
 }

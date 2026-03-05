@@ -19,6 +19,7 @@ namespace PetSavingBackend.Mappers
                 Description=inventoryModel.Description,
                 UnitValue= inventoryModel.UnitValue,
                 Stock= inventoryModel.Stock,
+                SupplerName = inventoryModel.SupplerName
             };
         }
 

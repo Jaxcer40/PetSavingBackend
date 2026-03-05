@@ -18,7 +18,7 @@ namespace PetSavingBackend.DTOs.Client
         //emailaddress es para validar que el formato del email sea correcto
         [EmailAddress (ErrorMessage ="El formato del email es incorrecto")]
         [MaxLength(150, ErrorMessage ="El email no puede superar los 150 caracteres")]
-        public string? Email {set; get;}=string.Empty;
+        public string? Email {set; get;}
 
         // regularexpression es para definir un patron que debe cumplir el campo
         [RegularExpression (@"^\d+$", ErrorMessage ="El telefono solo puede contener numeros")]
