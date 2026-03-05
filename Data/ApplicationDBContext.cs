@@ -39,6 +39,12 @@ namespace PetSavingBackend.Data
                     Name = "Veterinario",
                     NormalizedName = "VETERINARIO"
                 },
+                new IdentityRole<Guid>
+                {
+                    Id = Guid.Parse("00000000-0000-0000-0000-000000000003"),
+                    Name = "Empleado",
+                    NormalizedName = "EMPLEADO"
+                },
             };
             builder.Entity<IdentityRole<Guid>>().HasData(roles);
 

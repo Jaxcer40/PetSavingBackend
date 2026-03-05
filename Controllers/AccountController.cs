@@ -30,7 +30,7 @@ namespace PetSavingBackend.Controllers
             _SignInManager = signInManager;
         }
 
-        [HttpPost("register")]
+        [HttpPost("registeradmin")]
         public async Task<IActionResult> Register([FromBody] PostAccountRequestDTO registerDTO)
         {
             try
@@ -54,6 +54,42 @@ namespace PetSavingBackend.Controllers
                     Activity = registerDTO.Activity
                 };
                 var result = await _accountRepo.RegisterNewUserAsync(newUser, "Veterinario", registerDTO.Password);
+                if (result == null)
+                {
+                    return BadRequest(result);
+                }
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Ocurrio un error al registrar el usuario", error = ex.Message});
+            }
+        }
+
+       [HttpPost("registerstaff")]
+        public async Task<IActionResult> RegisterStaff([FromBody] PostAccountRequestDTO registerDTO)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+                var ExistingUser = await _accountRepo.UserExistCheckByEmailAsync(registerDTO.Email);
+                if (ExistingUser != null)
+                {
+                    return BadRequest(new { message = "Ya existe un usuario registrado con ese correo electronico"});
+                }
+                var newUser = new AppUser
+                {
+                    UserName = registerDTO.UserName,
+                    Email = registerDTO.Email,
+                    PhoneNumber = registerDTO.PhoneNumber,
+                    BirthDate = registerDTO.BirthDate,
+                    Specialization = registerDTO.Specialization,
+                    Activity = registerDTO.Activity
+                };
+                var result = await _accountRepo.RegisterNewUserAsync(newUser, "Empleado", registerDTO.Password);
                 if (result == null)
                 {
                     return BadRequest(result);
