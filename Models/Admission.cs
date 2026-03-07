@@ -20,7 +20,7 @@ namespace PetSavingBackend.Models
         public Guid VetId { get; set; }
         public AppUser Vet { get; set; } = null!;
 
-        public DateTime AdmissionDate { get; set; }
+        public DateTime AdmissionDate { get; set; } = DateTime.Now;
 
         public DateTime? DischargeDate { get; set; }
 

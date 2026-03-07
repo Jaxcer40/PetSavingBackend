@@ -16,9 +16,6 @@ namespace PetSavingBackend.DTOs.Admission
         [Required]
         public Guid VetId { get; set; }
 
-        [Required (ErrorMessage ="La fecha de ingreso es obligatorio")]
-        public DateTime AdmissionDate { get; set; }
-
         public DateTime? DischargeDate { get; set; }
 
         [Required (ErrorMessage ="El motivo de ingreso es obligatorio")]

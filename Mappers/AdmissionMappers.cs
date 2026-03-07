@@ -30,7 +30,7 @@ namespace PetSavingBackend.Mappers
                 Vet= new VetSummaryDTO
                 {   
                     Id=admissionModel.Vet.Id,
-                    FirstName=admissionModel.Vet.UserName,
+                    UserName=admissionModel.Vet.UserName,
                     Specialization=admissionModel.Vet.Specialization
                 }
           
@@ -41,7 +41,6 @@ namespace PetSavingBackend.Mappers
         {
             return new Admission
             {
-                AdmissionDate = admissionDTO.AdmissionDate,
                 DischargeDate = admissionDTO.DischargeDate,
                 AdmissionReason = admissionDTO.AdmissionReason,
                 CageNumber = admissionDTO.CageNumber,
