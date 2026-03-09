@@ -67,6 +67,7 @@ namespace PetSavingBackend.Repositories
             return _context.Admissions
                 .Include(a => a.Pet)
                 .Include(a => a.Vet)
+                .Include(s => s.Statuses)
                 .FirstOrDefaultAsync(a => a.Id == id);
         }
 

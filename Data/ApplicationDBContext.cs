@@ -83,7 +83,8 @@ namespace PetSavingBackend.Data
             builder.Entity<Admission>()
                 .HasMany(a => a.Statuses)
                 .WithOne(s => s.Admission)
-                .HasForeignKey(s => s.AdmissionId);
+                .HasForeignKey(s => s.AdmissionId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Appointment <-> Pet
             builder.Entity<Appointment>()

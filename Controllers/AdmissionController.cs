@@ -60,7 +60,7 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(admission.ToReadAdmissionDTO());
+            return Ok(admission.ToGetOneAdmissionDTOFromAdmission());
         }
 
         //Post de Admission
