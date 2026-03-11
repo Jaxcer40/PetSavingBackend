@@ -26,7 +26,7 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 // Show JWT in swagger
 builder.Services.AddSwaggerGen(option =>
 {
-    option.SwaggerDoc("v1", new OpenApiInfo { Title = "SafeMapQROOBackend", Version = "v1" });
+    option.SwaggerDoc("v1", new OpenApiInfo { Title = "PetSavingBackend", Version = "a0.0.8" });
     option.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         In = ParameterLocation.Header,
