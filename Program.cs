@@ -84,7 +84,7 @@ builder.Services.AddAuthentication(options =>
         ValidateAudience = true,
         ValidAudience = builder.Configuration["JWT:Audience"],
         IssuerSigningKey = new SymmetricSecurityKey(
-        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SignInKey"]))
+        System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SignInKey"]!))
         
 
     };
@@ -99,6 +99,7 @@ builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 
 // CORS
 builder.Services.AddCors(options =>
@@ -113,6 +114,9 @@ builder.Services.AddCors(options =>
 
 // Este es el punto donde se configura la canalización de solicitudes HTTP.
 var app = builder.Build();
+
+// Allow file serving
+app.UseStaticFiles();
 
 //Este bloque configura Swagger para el entorno de desarrollo.
 if (app.Environment.IsDevelopment())
@@ -136,6 +140,7 @@ app.Lifetime.ApplicationStarted.Register(() =>
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
+
 app.UseAuthorization();
 
 app.MapControllers();
