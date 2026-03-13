@@ -28,6 +28,8 @@ namespace PetSavingBackend.Models
 
         public string CageNumber { get; set; } = string.Empty;
 
+        public bool Discharged { get; set; } = false;
+
         //relacion uno a muchos con Status
         public ICollection<Status> Statuses { get; set; } = new List<Status>();
     }

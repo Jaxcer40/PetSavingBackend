@@ -23,5 +23,7 @@ namespace PetSavingBackend.DTOs.Admission
         [RegularExpression (@"^\d+$", ErrorMessage ="El numero de jaula solo puede contener numeros")]
         [MaxLength(20, ErrorMessage ="El numero de jaula no puede superar los 20 caracteres")]
         public string? CageNumber { get; set; } = string.Empty;
+
+        public bool? Discharged { get; set; }
     }
 }

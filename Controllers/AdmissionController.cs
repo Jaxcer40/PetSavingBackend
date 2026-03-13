@@ -96,7 +96,7 @@ namespace PetSavingBackend.Controllers
                 return NotFound();
             }
 
-            return Ok(admissionModel.ToReadAdmissionDTO());
+            return Ok(admissionModel.ToGetOneAdmissionDTOFromAdmission());
         }
 
         //Delete por id

@@ -76,6 +76,9 @@ namespace PetSavingBackend.Repositories
             if (!string.IsNullOrEmpty(updateDTO.LastName))
                 existingClient.LastName = updateDTO.LastName;
 
+            if (!string.IsNullOrEmpty(updateDTO.Email))
+                existingClient.Email = updateDTO.Email;
+
             if (!string.IsNullOrEmpty(updateDTO.PhoneNumber))
                 existingClient.PhoneNumber = updateDTO.PhoneNumber;
 

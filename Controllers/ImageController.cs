@@ -71,7 +71,7 @@ namespace PetSavingBackend.Controllers
 
             if (!System.IO.File.Exists(filePath))
             {
-                return NotFound();
+                return NoContent();
             }
 
             var fileBytes = System.IO.File.ReadAllBytes(filePath);
@@ -109,13 +109,6 @@ namespace PetSavingBackend.Controllers
         [HttpPut("{id:Guid}")]
         public async Task<IActionResult> UpdateImage(IFormFile file, [FromRoute] Guid id)
         {
-            string? alreadyExist = _ImageService.GetImageExtension(id);
-
-            if (alreadyExist == null)
-            {
-                return BadRequest("Image does not exists, use POST to create a new image.");
-            }
-            
             if (file == null || file.Length == 0)
             {
                 return BadRequest("No file uploaded.");

@@ -124,11 +124,15 @@ namespace PetSavingBackend.Repositories
             if(!string.IsNullOrWhiteSpace(updateDTO.CageNumber))
                 existingAdmission.CageNumber=updateDTO.CageNumber;
 
+            if(updateDTO.Discharged != null)
+                existingAdmission.Discharged = updateDTO.Discharged.Value;
+
             await _context.SaveChangesAsync();
 
             var admissionWithPetAndVet = await _context.Admissions
                 .Include(a => a.Pet)
                 .Include(a => a.Vet)
+                .Include(s => s.Statuses)
                 .FirstOrDefaultAsync(a => a.Id == existingAdmission.Id);
             
             return admissionWithPetAndVet;

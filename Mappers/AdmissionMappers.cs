@@ -20,6 +20,7 @@ namespace PetSavingBackend.Mappers
                 DischargeDate= admissionModel.DischargeDate,
                 AdmissionReason= admissionModel.AdmissionReason,
                 CageNumber= admissionModel.CageNumber,
+                Discharged = admissionModel.Discharged,
 
                 Pet = new PetSummaryDTO
                 {
@@ -31,7 +32,7 @@ namespace PetSavingBackend.Mappers
                 Vet= new VetSummaryDTO
                 {   
                     Id=admissionModel.Vet.Id,
-                    UserName=admissionModel.Vet.UserName,
+                    UserName=admissionModel.Vet.UserName!,
                     Specialization=admissionModel.Vet.Specialization
                 }
           
@@ -54,7 +55,7 @@ namespace PetSavingBackend.Mappers
                 Vet= new GetOneVetSummaryDTO
                 {   
                     Id=admissionModel.Vet.Id,
-                    UserName=admissionModel.Vet.UserName,
+                    UserName=admissionModel.Vet.UserName!,
                     Specialization=admissionModel.Vet.Specialization
                 },
 
@@ -62,6 +63,7 @@ namespace PetSavingBackend.Mappers
                 DischargeDate= admissionModel.DischargeDate,
                 AdmissionReason= admissionModel.AdmissionReason,
                 CageNumber= admissionModel.CageNumber,
+                Discharged = admissionModel.Discharged,
                 Statuses = admissionModel.Statuses.Select(s => new GetOneStatusSummaryDTO
                 {
                     Id = s.Id,

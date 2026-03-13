@@ -19,6 +19,7 @@ namespace PetSavingBackend.Dtos.Admission
         public DateTime? DischargeDate { get; set; }
         public string AdmissionReason { get; set; } = string.Empty;
         public string CageNumber { get; set; } = string.Empty;
+        public bool Discharged { get; set; }
         public List<GetOneStatusSummaryDTO>? Statuses { get; set; }
     }
 

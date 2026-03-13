@@ -23,7 +23,7 @@ namespace PetSavingBackend.DTOs.Admission
 
         public string CageNumber { get; set; } = string.Empty;
 
-
+        public bool Discharged { get; set; }
     }
 
     public class PetSummaryDTO
